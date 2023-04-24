@@ -26,6 +26,9 @@ public:
 	
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void AddCoins(int32 Value);
+
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -38,6 +41,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input_cpp")
 	UInputAction* JumpAction;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widgets_cpp")
+	//TSubclassOf<UUserWidget> ScoreWidgetClass;
+
+	//UPROPERTY()
+	//class UScoreWidget* ScoreWidget;
 
 	void MoveRight(const FInputActionValue& Value);
 

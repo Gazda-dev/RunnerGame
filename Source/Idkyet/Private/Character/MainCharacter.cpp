@@ -7,6 +7,8 @@
 #include "Components/InputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "HUD/ScoreManager.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 AMainCharacter::AMainCharacter()
@@ -36,6 +38,12 @@ void AMainCharacter::BeginPlay()
 			Subsystem->AddMappingContext(CharacterMapping, 0);
 		}
 	}
+
+	/*if (ScoreWidgetClass)
+	{
+		ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
+		ScoreWidget->AddToViewport();
+	}*/
 }
 
 void AMainCharacter::MoveRight(const FInputActionValue& Value)
@@ -70,5 +78,17 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	}
 
+}
+
+void AMainCharacter::AddCoins(int32 Value)
+{
+	if (UScoreManager* ScoreManager = Cast<UScoreManager>(StaticFindObject(UScoreManager::StaticClass(), nullptr, TEXT("/Game/RunnerGame/MyGameInstance.MyGameInstance:ScoreManager"))))
+	{
+		ScoreManager->AddScore(Value);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to find ScoreManager"));
+	}
 }
 
