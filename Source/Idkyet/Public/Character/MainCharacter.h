@@ -36,7 +36,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input_cpp")
 	UInputAction* MoveAction;
 
-	void Move(const FInputActionValue& Value);
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input_cpp")
+	UInputAction* JumpAction;
+
+	void MoveRight(const FInputActionValue& Value);
+
 
 private:
 

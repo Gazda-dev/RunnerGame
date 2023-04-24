@@ -38,13 +38,13 @@ void AMainCharacter::BeginPlay()
 	}
 }
 
-void AMainCharacter::Move(const FInputActionValue& Value)
+void AMainCharacter::MoveRight(const FInputActionValue& Value)
 {
 	const float DirectionValue = Value.Get<float>();
 	if (Controller && (DirectionValue != 0.f))
 	{
-		FVector Forward = GetActorForwardVector();
-		AddMovementInput(Forward, DirectionValue);
+		FVector Right = GetActorRightVector();
+		AddMovementInput(Right, DirectionValue);
 	}
 }
 
@@ -53,6 +53,8 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FVector Forward = GetActorForwardVector();
+	AddMovementInput(Forward);
 }
 
 // Called to bind functionality to input
@@ -62,7 +64,10 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainCharacter::MoveRight);
+		
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 	}
 
 }
