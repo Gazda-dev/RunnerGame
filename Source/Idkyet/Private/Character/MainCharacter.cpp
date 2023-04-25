@@ -82,13 +82,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AMainCharacter::AddCoins(int32 Value)
 {
-	if (UScoreManager* ScoreManager = Cast<UScoreManager>(StaticFindObject(UScoreManager::StaticClass(), nullptr, TEXT("/Game/RunnerGame/MyGameInstance.MyGameInstance:ScoreManager"))))
-	{
-		ScoreManager->AddScore(Value);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to find ScoreManager"));
-	}
+
 }
 
