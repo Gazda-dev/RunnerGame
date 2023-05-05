@@ -50,6 +50,9 @@ protected:
 
 	void MoveRight(const FInputActionValue& Value);
 
+	void Run(float DeltaTime);
+
+	float TotalDistanceMoved;
 
 private:
 

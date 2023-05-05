@@ -9,11 +9,13 @@
 #include "EnhancedInputComponent.h"
 #include "HUD/ScoreManager.h"
 #include "Blueprint/UserWidget.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
-// Sets default values
+
+
 AMainCharacter::AMainCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	
 	PrimaryActorTick.bCanEverTick = true;
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
@@ -26,7 +28,7 @@ AMainCharacter::AMainCharacter()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
-// Called when the game starts or when spawned
+
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -38,12 +40,14 @@ void AMainCharacter::BeginPlay()
 			Subsystem->AddMappingContext(CharacterMapping, 0);
 		}
 	}
+}
 
-	/*if (ScoreWidgetClass)
-	{
-		ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
-		ScoreWidget->AddToViewport();
-	}*/
+
+void AMainCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+
 }
 
 void AMainCharacter::MoveRight(const FInputActionValue& Value)
@@ -51,19 +55,30 @@ void AMainCharacter::MoveRight(const FInputActionValue& Value)
 	const float DirectionValue = Value.Get<float>();
 	if (Controller && (DirectionValue != 0.f))
 	{
-		FVector Right = GetActorRightVector();
+		FVector Right = GetActorForwardVector();
 		AddMovementInput(Right, DirectionValue);
 	}
 }
 
-// Called every frame
-void AMainCharacter::Tick(float DeltaTime)
+void AMainCharacter::Run(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
-
 	FVector Forward = GetActorForwardVector();
 	AddMovementInput(Forward);
+
+	float DistanceMoved = Forward.Size() * DeltaTime;
+	TotalDistanceMoved += DistanceMoved;
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), TotalDistanceMoved));
+	}
+
+	//if (TotalDistanceMoved > 5.f)
+	//{
+	//	float NewSpeed = GetCharacterMovement()->MaxWalkSpeed + 100.f;
+	//	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+	//}
 }
+
 
 // Called to bind functionality to input
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
