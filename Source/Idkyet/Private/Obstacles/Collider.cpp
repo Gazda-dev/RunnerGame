@@ -9,7 +9,7 @@
 ACollider::ACollider()
 {
 
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
 	RootComponent = BoxCollider;
@@ -22,15 +22,13 @@ void ACollider::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(TimerHandle, [this]() { MoveWall(GetWorld()->GetDeltaSeconds()); }, 0.2f, true);
 }
 
-void ACollider::MoveWall(float DeltaTime)
+void ACollider::MoveWall()
 {
 	FVector CurrentLocation = GetActorLocation();
 	FVector TargetLocation = CurrentLocation + FVector(WallSpeed, 0.f, 0.f);
-	FVector InterpolatedLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, InterpolatedSpeed);
-	SetActorLocation(InterpolatedLocation);
+	SetActorLocation(TargetLocation);
 }
 
 
@@ -38,5 +36,6 @@ void ACollider::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	MoveWall();
 }
 

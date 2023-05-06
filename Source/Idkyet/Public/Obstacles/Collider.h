@@ -29,18 +29,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components_cpp")
 	UBoxComponent* BoxCollider;
 
-	void MoveWall(float DeltaTime);
+	void MoveWall();
 
 	UPROPERTY(EditAnywhere, Category = "Wall_cpp")
 	float WallSpeed = 100.f;
 
-	UPROPERTY(EditAnywhere, Category = "Wall_cpp")
-	float InterpolatedSpeed = 1000.f;
-
 private:
-	FTimerHandle TimerHandle;
-
-
-
 
 };
