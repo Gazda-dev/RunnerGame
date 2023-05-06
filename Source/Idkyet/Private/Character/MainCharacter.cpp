@@ -55,8 +55,18 @@ void AMainCharacter::MoveRight(const FInputActionValue& Value)
 	const float DirectionValue = Value.Get<float>();
 	if (Controller && (DirectionValue != 0.f))
 	{
+		FVector PreviousLocation = GetActorLocation();
+
 		FVector Right = GetActorForwardVector();
 		AddMovementInput(Right, DirectionValue);
+
+		FVector CurrentLocation = GetActorLocation();
+		float DistanceMoved = (CurrentLocation - PreviousLocation).Size() * 100.f;
+		TotalDistanceMoved += DistanceMoved;
+		if (GEngine)
+		{
+			GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString::Printf(TEXT("Distance: %.2f m"), TotalDistanceMoved / 100.f));
+		}
 	}
 }
 
@@ -69,6 +79,7 @@ void AMainCharacter::Run(float DeltaTime)
 	TotalDistanceMoved += DistanceMoved;
 	if (GEngine)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Gengine is cool"));
 		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), TotalDistanceMoved));
 	}
 
