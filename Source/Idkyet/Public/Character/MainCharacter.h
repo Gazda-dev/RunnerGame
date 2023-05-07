@@ -52,7 +52,10 @@ protected:
 
 	void Run(float DeltaTime);
 
-	float TotalDistanceMoved;
+	float TotalDistanceMoved = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score_cpp")
+	int32 TotalValue = 0;
 
 private:
 

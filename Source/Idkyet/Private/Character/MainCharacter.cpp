@@ -61,14 +61,22 @@ void AMainCharacter::MoveRight(const FInputActionValue& Value)
 		AddMovementInput(Right, DirectionValue);
 
 		FVector CurrentLocation = GetActorLocation();
-		float DistanceMoved = (CurrentLocation - PreviousLocation).Size() * 100.f;
+		float DistanceMoved = (CurrentLocation - PreviousLocation).Size();
+
 		TotalDistanceMoved += DistanceMoved;
+
+		FString DistanceString = FString::Printf(TEXT("Distance: %f m"), TotalDistanceMoved);
 		if (GEngine)
 		{
-			GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString::Printf(TEXT("Distance: %.2f m"), TotalDistanceMoved / 100.f));
+			GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, DistanceString);
+			GEngine->AddOnScreenDebugMessage(2, 5.f, FColor::Yellow, FString::Printf(TEXT("DistanceMoved: %f m"), DistanceMoved));
+			GEngine->AddOnScreenDebugMessage(3, 5.f, FColor::Yellow, FString::Printf(TEXT("Previous: %f m"), *PreviousLocation.ToString()));
+			GEngine->AddOnScreenDebugMessage(4, 5.f, FColor::Yellow, FString::Printf(TEXT("Current: %f m"), *CurrentLocation.ToString()));
 		}
 	}
 }
+
+
 
 void AMainCharacter::Run(float DeltaTime)
 {
@@ -108,6 +116,10 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AMainCharacter::AddCoins(int32 Value)
 {
-
+	TotalValue += Value;
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(2, 20.f, FColor::Red, FString::Printf(TEXT("Coins: %d"), TotalValue));
+	}
 }
 
