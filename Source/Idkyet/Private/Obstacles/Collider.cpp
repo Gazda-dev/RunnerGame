@@ -13,8 +13,7 @@ ACollider::ACollider()
 
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
 	RootComponent = BoxCollider;
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh"));
-	StaticMesh->SetupAttachment(GetRootComponent());
+
 }
 
 
