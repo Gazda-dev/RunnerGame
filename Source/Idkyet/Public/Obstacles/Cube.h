@@ -36,7 +36,7 @@ protected:
 	UStaticMeshComponent* ItemMesh;
 
 	UPROPERTY(VisibleAnywhere)
-	class USphereComponent* Sphere;
+	class UBoxComponent* Box;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Params", meta = (AllowPrivateAccess = "true"))

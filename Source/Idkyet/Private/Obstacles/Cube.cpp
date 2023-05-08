@@ -2,7 +2,7 @@
 
 
 #include "Obstacles/Cube.h"
-#include "Components/SphereComponent.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 ACube::ACube()
@@ -10,11 +10,11 @@ ACube::ACube()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
-	RootComponent = ItemMesh;
+	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
+	RootComponent = Box;
 
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	Sphere->SetupAttachment(GetRootComponent());
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	ItemMesh->SetupAttachment(GetRootComponent());
 }
 
 // Called when the game starts or when spawned
