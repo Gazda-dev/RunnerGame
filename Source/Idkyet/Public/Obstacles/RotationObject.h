@@ -19,6 +19,12 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* ItemMesh;
+
+	UPROPERTY(EditAnywhere, Category = "Movement #cpp")
+	float YawRotation = 1.f;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

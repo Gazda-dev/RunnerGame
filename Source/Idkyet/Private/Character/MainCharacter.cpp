@@ -102,12 +102,6 @@ void AMainCharacter::CalculateDistance()
             bIsMovingForward = false;
         }
     }
-
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Distance: %d m"), TotalDistanceMoved / 100));
-    }
-
     Start = Current;
 }
 
