@@ -35,6 +35,18 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Coins_cpp")
 	FOnCoinsValueChanged OnCoinsValueChanged;
 
+	UFUNCTION(BlueprintPure, Category = "Score_cpp")
+		int32 GetTotalValue() const
+	{
+		return TotalValue;
+	}
+
+	UFUNCTION(BlueprintPure, Category = "Score_cpp")
+		int32 GetTotalDistancemoved() const
+	{
+		return TotalDistanceMoved;
+	}
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -58,20 +70,12 @@ protected:
 
 	int32 TotalDistanceMoved = 0;
 
-	UFUNCTION(BlueprintPure, Category = "Score_cpp")
-	int32 GetTotalDistancemoved() const
-	{
-		return TotalDistanceMoved;
-	}
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score_cpp")
 	int32 TotalValue = 0;
 
-	UFUNCTION(BlueprintPure, Category = "Score_cpp")
-	int32 GetTotalValue() const
-	{
-		return TotalValue;
-	}
+
 
 	FVector Start;
 	FVector Current;

@@ -47,6 +47,7 @@ void AMainCharacter::BeginPlay()
 	}
 
 	Start = GetActorLocation();
+
 }
 
 
