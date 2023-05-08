@@ -28,9 +28,6 @@ AMainCharacter::AMainCharacter()
 	Camera->SetupAttachment(SpringArm);
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
-
-	GetCapsuleComponent()->SetHiddenInGame(false);
-	GetArrowComponent()->SetHiddenInGame(false);
 }
 
 

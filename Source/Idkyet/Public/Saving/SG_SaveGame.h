@@ -21,4 +21,16 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Score #cpp")
 	int32 BestCoins = 0;
+
+	UFUNCTION(BlueprintPure, Category = "Score_cpp")
+		int32 GetBestDistance() const
+	{
+		return BestDistance;
+	}
+
+	UFUNCTION(BlueprintPure, Category = "Score_cpp")
+		int32 GetBestCoins() const
+	{
+		return BestCoins;
+	}
 };

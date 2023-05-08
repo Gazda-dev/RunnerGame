@@ -29,7 +29,7 @@ void ACube::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	RunningTime += DeltaTime;
-	AddActorWorldOffset(FVector(0.f, 0.f, TransformedSin()));
+	AddActorWorldOffset(FVector(TransformedCos(), 0.f, TransformedSin()));
 }
 
 float ACube::TransformedSin()
