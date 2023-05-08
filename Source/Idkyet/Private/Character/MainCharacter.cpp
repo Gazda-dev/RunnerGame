@@ -40,6 +40,8 @@ void AMainCharacter::BeginPlay()
 			Subsystem->AddMappingContext(CharacterMapping, 0);
 		}
 	}
+
+	Start = GetActorLocation();
 }
 
 
@@ -47,7 +49,15 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	Current = GetActorLocation();
+	float DistanceMoved = FMath::Abs(Start.X - Current.X);
+	TotalDistanceMoved += DistanceMoved;
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Distance: %f m"), TotalDistanceMoved / 100.f));
+	}
 
+	Start = Current;
 }
 
 void AMainCharacter::MoveRight(const FInputActionValue& Value)
@@ -55,49 +65,10 @@ void AMainCharacter::MoveRight(const FInputActionValue& Value)
 	const float DirectionValue = Value.Get<float>();
 	if (Controller && (DirectionValue != 0.f))
 	{
-		FVector PreviousLocation = GetActorLocation();
-
 		FVector Right = GetActorForwardVector();
 		AddMovementInput(Right, DirectionValue);
-
-		FVector CurrentLocation = GetActorLocation();
-		float DistanceMoved = (CurrentLocation - PreviousLocation).Size();
-
-		TotalDistanceMoved += DistanceMoved;
-
-		FString DistanceString = FString::Printf(TEXT("Distance: %f m"), TotalDistanceMoved);
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, DistanceString);
-			GEngine->AddOnScreenDebugMessage(2, 5.f, FColor::Yellow, FString::Printf(TEXT("DistanceMoved: %f m"), DistanceMoved));
-			GEngine->AddOnScreenDebugMessage(3, 5.f, FColor::Yellow, FString::Printf(TEXT("Previous: %f m"), *PreviousLocation.ToString()));
-			GEngine->AddOnScreenDebugMessage(4, 5.f, FColor::Yellow, FString::Printf(TEXT("Current: %f m"), *CurrentLocation.ToString()));
-		}
 	}
 }
-
-
-
-void AMainCharacter::Run(float DeltaTime)
-{
-	FVector Forward = GetActorForwardVector();
-	AddMovementInput(Forward);
-
-	float DistanceMoved = Forward.Size() * DeltaTime;
-	TotalDistanceMoved += DistanceMoved;
-	if (GEngine)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Gengine is cool"));
-		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, FString::Printf(TEXT("%f"), TotalDistanceMoved));
-	}
-
-	//if (TotalDistanceMoved > 5.f)
-	//{
-	//	float NewSpeed = GetCharacterMovement()->MaxWalkSpeed + 100.f;
-	//	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
-	//}
-}
-
 
 // Called to bind functionality to input
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -117,6 +88,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void AMainCharacter::AddCoins(int32 Value)
 {
 	TotalValue += Value;
+	OnCoinsValueChanged.Broadcast(TotalValue);
 	if (GEngine)
 	{
 		GEngine->AddOnScreenDebugMessage(2, 20.f, FColor::Red, FString::Printf(TEXT("Coins: %d"), TotalValue));

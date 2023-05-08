@@ -29,6 +29,12 @@ public:
 	void AddCoins(int32 Value);
 
 
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCoinsValueChanged, int32, NewValue);
+
+	UPROPERTY(BlueprintAssignable, Category = "Coins_cpp")
+	FOnCoinsValueChanged OnCoinsValueChanged;
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -50,13 +56,19 @@ protected:
 
 	void MoveRight(const FInputActionValue& Value);
 
-	void Run(float DeltaTime);
-
 	float TotalDistanceMoved = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score_cpp")
 	int32 TotalValue = 0;
 
+	UFUNCTION(BlueprintPure, Category = "Score_cpp")
+	int32 GetTotalValue() const
+	{
+		return TotalValue;
+	}
+
+	FVector Start;
+	FVector Current;
 private:
 
 	UPROPERTY(VisibleAnywhere)
