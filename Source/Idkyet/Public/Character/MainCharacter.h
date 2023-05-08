@@ -56,7 +56,13 @@ protected:
 
 	void MoveRight(const FInputActionValue& Value);
 
-	float TotalDistanceMoved = 0.f;
+	int32 TotalDistanceMoved = 0;
+
+	UFUNCTION(BlueprintPure, Category = "Score_cpp")
+	int32 GetTotalDistancemoved() const
+	{
+		return TotalDistanceMoved / 10;
+	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score_cpp")
 	int32 TotalValue = 0;
@@ -69,6 +75,8 @@ protected:
 
 	FVector Start;
 	FVector Current;
+
+	void CalculateDistance();
 private:
 
 	UPROPERTY(VisibleAnywhere)
@@ -76,6 +84,10 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* Camera;
+
+	float CheckpointDistance = 0.f;
+	float CheckpointXPosition = 0.f;
+	bool bIsMovingForward = true;
 
 
 };

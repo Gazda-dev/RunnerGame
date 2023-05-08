@@ -10,6 +10,8 @@
 #include "HUD/ScoreManager.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/ArrowComponent.h"
 
 
 
@@ -26,6 +28,9 @@ AMainCharacter::AMainCharacter()
 	Camera->SetupAttachment(SpringArm);
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+
+	GetCapsuleComponent()->SetHiddenInGame(false);
+	GetArrowComponent()->SetHiddenInGame(false);
 }
 
 
@@ -49,12 +54,50 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	CalculateDistance();
+}
+
+void AMainCharacter::CalculateDistance()
+{
 	Current = GetActorLocation();
 	float DistanceMoved = FMath::Abs(Start.X - Current.X);
-	TotalDistanceMoved += DistanceMoved;
+
+	if (TotalDistanceMoved > CheckpointDistance && Current.X < CheckpointXPosition)
+	{
+		CheckpointDistance = TotalDistanceMoved;
+	}
+
+	if (GetVelocity().X > 0.f)
+	{
+		if (bIsMovingForward)
+		{
+			TotalDistanceMoved += DistanceMoved;
+		}
+		else
+		{
+			float ForwardDistance = FMath::Abs(Current.X - CheckpointXPosition);
+			CheckpointDistance += ForwardDistance;
+			CheckpointXPosition = Current.X;
+			TotalDistanceMoved = CheckpointDistance + DistanceMoved;
+			bIsMovingForward = true;
+		}
+	}
+	else if (GetVelocity().X < 0.f)
+	{
+		if (!bIsMovingForward)
+		{
+			return;
+		}
+		else
+		{
+			CheckpointXPosition = Current.X;
+			bIsMovingForward = false;
+		}
+	}
+
 	if (GEngine)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Distance: %f m"), TotalDistanceMoved / 100.f));
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Distance: %d m"), TotalDistanceMoved / 100));
 	}
 
 	Start = Current;
@@ -62,12 +105,15 @@ void AMainCharacter::Tick(float DeltaTime)
 
 void AMainCharacter::MoveRight(const FInputActionValue& Value)
 {
-	const float DirectionValue = Value.Get<float>();
-	if (Controller && (DirectionValue != 0.f))
-	{
-		FVector Right = GetActorForwardVector();
-		AddMovementInput(Right, DirectionValue);
-	}
+	const FVector2D MovementVector = Value.Get<FVector2D>();
+	const FRotator Rotation = Controller->GetControlRotation();
+	const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
+
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	AddMovementInput(ForwardDirection, MovementVector.Y);
+
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	AddMovementInput(RightDirection, MovementVector.X);
 }
 
 // Called to bind functionality to input
