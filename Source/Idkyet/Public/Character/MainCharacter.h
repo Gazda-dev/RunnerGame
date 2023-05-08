@@ -61,7 +61,7 @@ protected:
 	UFUNCTION(BlueprintPure, Category = "Score_cpp")
 	int32 GetTotalDistancemoved() const
 	{
-		return TotalDistanceMoved / 10;
+		return TotalDistanceMoved;
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score_cpp")
@@ -88,6 +88,7 @@ private:
 	float CheckpointDistance = 0.f;
 	float CheckpointXPosition = 0.f;
 	bool bIsMovingForward = true;
+	float MinCheckpointDistance = 50.f;
 
 
 };

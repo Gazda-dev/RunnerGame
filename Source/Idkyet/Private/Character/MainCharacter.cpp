@@ -59,49 +59,60 @@ void AMainCharacter::Tick(float DeltaTime)
 
 void AMainCharacter::CalculateDistance()
 {
-	Current = GetActorLocation();
-	float DistanceMoved = FMath::Abs(Start.X - Current.X);
+    Current = GetActorLocation();
+    float DistanceMoved = FMath::Abs(Start.X - Current.X);
 
-	if (TotalDistanceMoved > CheckpointDistance && Current.X < CheckpointXPosition)
-	{
-		CheckpointDistance = TotalDistanceMoved;
-	}
+    if (GetVelocity().X > 0.f)
+    {
+        if (bIsMovingForward)
+        {
+            // Check if the player has moved far enough from the last checkpoint to set a new one
+            if (Current.X >= CheckpointXPosition + MinCheckpointDistance)
+            {
+                TotalDistanceMoved = CheckpointDistance + DistanceMoved;
+                CheckpointDistance = TotalDistanceMoved;
+                CheckpointXPosition = Current.X;
+            }
+            else
+            {
+                TotalDistanceMoved = CheckpointDistance;
+            }
+        }
+        else
+        {
+            CheckpointDistance = TotalDistanceMoved + DistanceMoved;
+            CheckpointXPosition = Start.X;
+            TotalDistanceMoved = CheckpointDistance;
+            bIsMovingForward = true;
+        }
+    }
+    else if (GetVelocity().X < 0.f)
+    {
+        if (!bIsMovingForward)
+        {
+            if (Current.X <= CheckpointXPosition - MinCheckpointDistance)
+            {
+                TotalDistanceMoved = CheckpointDistance;
+                CheckpointXPosition = Current.X;
+            }
+        }
+        else
+        {
+            CheckpointDistance = TotalDistanceMoved - DistanceMoved;
+            CheckpointXPosition = Current.X;
+            TotalDistanceMoved = CheckpointDistance;
+            bIsMovingForward = false;
+        }
+    }
 
-	if (GetVelocity().X > 0.f)
-	{
-		if (bIsMovingForward)
-		{
-			TotalDistanceMoved += DistanceMoved;
-		}
-		else
-		{
-			float ForwardDistance = FMath::Abs(Current.X - CheckpointXPosition);
-			CheckpointDistance += ForwardDistance;
-			CheckpointXPosition = Current.X;
-			TotalDistanceMoved = CheckpointDistance + DistanceMoved;
-			bIsMovingForward = true;
-		}
-	}
-	else if (GetVelocity().X < 0.f)
-	{
-		if (!bIsMovingForward)
-		{
-			return;
-		}
-		else
-		{
-			CheckpointXPosition = Current.X;
-			bIsMovingForward = false;
-		}
-	}
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Distance: %d m"), TotalDistanceMoved / 100));
+    }
 
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Distance: %d m"), TotalDistanceMoved / 100));
-	}
-
-	Start = Current;
+    Start = Current;
 }
+
 
 void AMainCharacter::MoveRight(const FInputActionValue& Value)
 {
