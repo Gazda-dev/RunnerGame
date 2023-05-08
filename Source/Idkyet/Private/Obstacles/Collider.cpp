@@ -4,7 +4,8 @@
 #include "Obstacles/Collider.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
-
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 
 ACollider::ACollider()
 {
@@ -13,6 +14,11 @@ ACollider::ACollider()
 
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collider"));
 	RootComponent = BoxCollider;
+
+	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
+	StaticMesh->SetupAttachment(GetRootComponent());
+
+	BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &ACollider::OnBoxColliderOverlap);
 
 }
 
@@ -23,6 +29,12 @@ void ACollider::BeginPlay()
 
 }
 
+void ACollider::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	MoveWall();
+}
 void ACollider::MoveWall()
 {
 	FVector CurrentLocation = GetActorLocation();
@@ -30,11 +42,14 @@ void ACollider::MoveWall()
 	SetActorLocation(TargetLocation);
 }
 
-
-void ACollider::Tick(float DeltaTime)
+void ACollider::OnBoxColliderOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	Super::Tick(DeltaTime);
-
-	MoveWall();
+	if (ACharacter* Character = Cast<ACharacter>(OtherActor))
+	{
+		Character->Destroy();
+	}
 }
+
+
+
 
