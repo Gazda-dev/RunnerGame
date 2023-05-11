@@ -119,6 +119,13 @@ void AMainCharacter::MoveRight(const FInputActionValue& Value)
 	AddMovementInput(RightDirection, MovementVector.X);
 }
 
+void AMainCharacter::Looking(const FInputActionValue& Value)
+{
+    const FVector2D LookingVector = Value.Get<FVector2D>();
+    AddControllerYawInput(LookingVector.X);
+    AddControllerPitchInput(LookingVector.Y);
+}
+
 // Called to bind functionality to input
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -127,6 +134,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMainCharacter::MoveRight);
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMainCharacter::Looking);
 		
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
@@ -138,9 +146,5 @@ void AMainCharacter::AddCoins(int32 Value)
 {
 	TotalValue += Value;
 	OnCoinsValueChanged.Broadcast(TotalValue);
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(2, 20.f, FColor::Red, FString::Printf(TEXT("Coins: %d"), TotalValue));
-	}
 }
 

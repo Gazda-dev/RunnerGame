@@ -60,6 +60,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input_cpp")
 	UInputAction* JumpAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input_cpp")
+	UInputAction* LookAction;
+
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Widgets_cpp")
 	//TSubclassOf<UUserWidget> ScoreWidgetClass;
 
@@ -70,7 +73,7 @@ protected:
 
 	int32 TotalDistanceMoved = 0;
 
-
+	void Looking(const FInputActionValue& Value);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score_cpp")
 	int32 TotalValue = 0;
