@@ -6,7 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "GM_GameModeBase.generated.h"
 
-class UUserWidget;
 
 UCLASS()
 class IDKYET_API AGM_GameModeBase : public AGameModeBase
@@ -22,11 +21,31 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ExitGame();
 
+	UFUNCTION(BlueprintCallable)
+	void OpenSettingsMenu();
+
+	UFUNCTION(BlueprintCallable)
+	void CloseSettingsMenu();
+
+	UFUNCTION(BlueprintCallable)
+	void ApplySettings();
+
 private:
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UUserWidget> MenuScreenWidget;
+	TSubclassOf<class UUserWidget> MenuScreenClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> SettingsScreenClass;
 
 	UPROPERTY()
 	UUserWidget* Menu;
+
+	UPROPERTY()
+	UUserWidget* SettingsMenu;
+
+	void DisableAllInputs();
+	void EnableAllInputs();
+
+	bool bIsSettingsMenuOpen = false;
 };
