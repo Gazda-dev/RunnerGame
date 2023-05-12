@@ -27,9 +27,6 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "Drone movement #cpp")
-	float DroneMovementSpeed = 10.f;
-
 	void ChasingPlayer();
 
 private:
