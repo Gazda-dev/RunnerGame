@@ -48,4 +48,11 @@ private:
 	void EnableAllInputs();
 
 	bool bIsSettingsMenuOpen = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GameMode #cpp")
+	TSubclassOf<class ADroneCharacter> DroneCharacterClass;
+
+	UPROPERTY()
+	ADroneCharacter* DroneCharacter;
+
 };

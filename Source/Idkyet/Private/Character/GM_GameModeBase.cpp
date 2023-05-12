@@ -7,7 +7,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Engine/Engine.h"
 #include "GameFramework/PlayerController.h"
-
+#include "Enemies/DroneCharacter.h"
 
 void AGM_GameModeBase::BeginPlay()
 {
@@ -24,6 +24,16 @@ void AGM_GameModeBase::BeginPlay()
 		}
 	}
 
+	if (DroneCharacterClass)
+	{
+		TArray<AActor*> FoundActors;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), DroneCharacterClass, FoundActors);
+		if (FoundActors.Num() > 0)
+		{
+			DroneCharacter = Cast<ADroneCharacter>(FoundActors[0]);
+		}
+	}
+
 }
 
 void AGM_GameModeBase::StartGame()
@@ -31,7 +41,13 @@ void AGM_GameModeBase::StartGame()
 	EnableAllInputs();
 	if (Menu)
 	{
-		Menu->RemoveFromViewport();
+		Menu->RemoveFromParent();
+	}
+
+	if (DroneCharacter)
+	{
+		DroneCharacter->bShouldChasePlayer = true;
+		UE_LOG(LogTemp, Warning, TEXT("shouldchaseplayer = %d"), DroneCharacter->bShouldChasePlayer ? 1 : 0);
 	}
 	
 }
@@ -56,7 +72,7 @@ void AGM_GameModeBase::OpenSettingsMenu()
 		{
 			if (Menu)
 			{
-				Menu->RemoveFromViewport();
+				Menu->RemoveFromParent();
 				SettingsMenu->AddToViewport();
 				bIsSettingsMenuOpen = true;
 				DisableAllInputs();
@@ -69,7 +85,7 @@ void AGM_GameModeBase::CloseSettingsMenu()
 {
 	if (SettingsMenu && bIsSettingsMenuOpen)
 	{
-		SettingsMenu->RemoveFromViewport();
+		SettingsMenu->RemoveFromParent();
 		bIsSettingsMenuOpen = false;
 	}
 }

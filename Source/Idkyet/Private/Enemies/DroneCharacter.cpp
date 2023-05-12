@@ -2,30 +2,56 @@
 
 
 #include "Enemies/DroneCharacter.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/PlayerController.h"
+#include "Kismet/GameplayStatics.h"
 
-// Sets default values
 ADroneCharacter::ADroneCharacter()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	DroneCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Drone Capsule"));
+	RootComponent = DroneCapsule;
+
+	DroneMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Drone Mesh"));
+	DroneMesh->SetupAttachment(GetRootComponent());
 }
 
-// Called when the game starts or when spawned
+
 void ADroneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
+void ADroneCharacter::ChasingPlayer()
+{
+
+
+}
+
+
 void ADroneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bShouldChasePlayer)
+	{
+		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+		{
+			if (APawn* PlayerPawn = PlayerController->GetPawn())
+			{
+				FVector PlayerDirection = PlayerPawn->GetActorLocation() - GetActorLocation();
+				PlayerDirection.Normalize();
+
+				FVector NewLocation = GetActorLocation() + PlayerDirection * DroneMovementSpeed * DeltaTime;
+				SetActorLocation(NewLocation);
+			}
+		}
+	}
 }
 
-// Called to bind functionality to input
+
 void ADroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

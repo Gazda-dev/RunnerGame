@@ -6,24 +6,40 @@
 #include "GameFramework/Pawn.h"
 #include "DroneCharacter.generated.h"
 
+class UStaticMeshComponent;
+class UCapsuleComponent;
+
 UCLASS()
 class IDKYET_API ADroneCharacter : public APawn
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
+
 	ADroneCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	bool bShouldChasePlayer = false;
+
+protected:
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, Category = "Drone movement #cpp")
+	float DroneMovementSpeed = 10.f;
+
+	void ChasingPlayer();
+
+private:
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* DroneMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	UCapsuleComponent* DroneCapsule;
+
+
 
 };
