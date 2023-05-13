@@ -2,7 +2,7 @@
 
 
 #include "Obstacles/Trampoline.h"
-#include "Character/MainCharacter.h"
+#include "Character/MyALSCharacter.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -34,9 +34,9 @@ void ATrampoline::BeginPlay()
 void ATrampoline::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 								int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(AMainCharacter::StaticClass()))
+	if (OtherActor->IsA(AMyALSCharacter::StaticClass()))
 	{
-		AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor);
+		AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(OtherActor);
 		UE_LOG(LogTemp, Warning, TEXT("Overlapppped"));
 		FVector JumpDirection = SweepResult.Normal;
 		JumpDirection.Z = FMath::Abs(JumpDirection.Z);

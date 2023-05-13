@@ -4,7 +4,7 @@
 #include "Enemies/Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
-#include "Character/MainCharacter.h"
+#include "Character/MyALSCharacter.h"
 #include "GameFramework/DamageType.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -52,7 +52,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 	
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{
-		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor))
+		if (AMyALSCharacter* MyALSCharacter = Cast<AMyALSCharacter>(OtherActor))
 		{
 			auto MyOwnerInstigator = MyOwner->GetInstigatorController();
 			auto DamageTypeClass = UDamageType::StaticClass();

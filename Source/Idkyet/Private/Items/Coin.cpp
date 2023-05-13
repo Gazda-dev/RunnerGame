@@ -4,7 +4,7 @@
 #include "Items/Coin.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
-#include "Character/MainCharacter.h"
+#include "Character/MyALSCharacter.h"
 
 
 // Sets default values
@@ -38,9 +38,9 @@ void ACoin::BeginPlay()
 void ACoin::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(AMainCharacter::StaticClass()))
+	if (OtherActor->IsA(AMyALSCharacter::StaticClass()))
 	{
-		AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor);
+		AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(OtherActor);
 		MainCharacter->AddCoins(Value);
 		Destroy();
 	}

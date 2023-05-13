@@ -8,7 +8,7 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Saving/SG_SaveGame.h"
-#include "Character/MainCharacter.h"
+#include "Character/MyALSCharacter.h"
 
 ACollider::ACollider()
 {
@@ -57,7 +57,7 @@ void ACollider::OnBoxColliderOverlap(UPrimitiveComponent* OverlappedComponent, A
 		BestCoins = SaveGame->BestCoins;
 	}
 
-	if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor))
+	if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(OtherActor))
 	{
 		int32 CurrentDistance = MainCharacter->GetTotalDistancemoved();
 		int32 CurrentCoins = MainCharacter->GetTotalValue();
