@@ -47,6 +47,10 @@ public:
 		return TotalDistanceMoved;
 	}
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+
+
 protected:
 	
 	virtual void BeginPlay() override;
@@ -96,6 +100,7 @@ private:
 	float CheckpointXPosition = 0.f;
 	bool bIsMovingForward = true;
 	float MinCheckpointDistance = 50.f;
+	float Health = 5.0f;
 
 
 };

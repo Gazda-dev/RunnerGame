@@ -18,6 +18,9 @@ ADroneCharacter::ADroneCharacter()
 
 	DroneCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Drone Capsule"));
 	DroneCapsule->SetupAttachment(GetRootComponent());
+
+	ProjectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSpawnPoint"));
+	ProjectileSpawnPoint->SetupAttachment(DroneMesh);
 }
 
 
@@ -28,6 +31,13 @@ void ADroneCharacter::BeginPlay()
 	FRotator NewRotation = GetActorRotation();
 	NewRotation.Yaw = FMath::RandRange(0.f, 360.f);
 	SetActorRotation(NewRotation);
+}
+
+void ADroneCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	ChasingPlayer();
 }
 
 void ADroneCharacter::ChasingPlayer()
@@ -44,6 +54,29 @@ void ADroneCharacter::ChasingPlayer()
 				FVector DirectionToPlayer = PlayerDirection - DroneLocation;
 				float DistanceToPlayer = DirectionToPlayer.Size();
 
+				if (DistanceToPlayer <= ShootingRange)
+				{
+					//if the shooter timer isnt active, start it
+					if (!GetWorld()->GetTimerManager().IsTimerActive(ShootingTimerHandle))
+					{
+						GetWorld()->GetTimerManager().SetTimer
+						(
+							ShootingTimerHandle,
+							this,
+							&ADroneCharacter::ShootProjectile,
+							TimeBetweenShots,
+							true
+						);
+					}
+				}
+				else
+				{
+					//if the shooting timer is active, clear it
+					if (GetWorld()->GetTimerManager().IsTimerActive(ShootingTimerHandle))
+					{
+						GetWorld()->GetTimerManager().ClearTimer(ShootingTimerHandle);
+					}
+				}
 
 					DirectionToPlayer.Normalize();
 					float Speed = 100.f;
@@ -80,13 +113,23 @@ void ADroneCharacter::ChasingPlayer()
 
 }
 
-
-void ADroneCharacter::Tick(float DeltaTime)
+void ADroneCharacter::ShootProjectile()
 {
-	Super::Tick(DeltaTime);
+	if (ProjectileClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-	ChasingPlayer();
+		GetWorld()->SpawnActor<AProjectile>
+			(
+				ProjectileClass,
+				ProjectileSpawnPoint->GetComponentLocation(),
+				GetActorRotation(),
+				SpawnParams
+			);
+	}
 }
+
 
 
 void ADroneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

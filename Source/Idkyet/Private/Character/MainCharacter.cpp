@@ -31,6 +31,7 @@ AMainCharacter::AMainCharacter()
 }
 
 
+
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -148,3 +149,18 @@ void AMainCharacter::AddCoins(int32 Value)
 	OnCoinsValueChanged.Broadcast(TotalValue);
 }
 
+float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+    const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+    if (ActualDamage > 0.f)
+    {
+        Health -= ActualDamage;
+        if (Health < 0.0f)
+        {
+            Destroy();
+        }
+    }
+
+    return ActualDamage;
+}

@@ -6,21 +6,37 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
+class UProjectileMovementComponent;
+class USphereComponent;
+
 UCLASS()
 class IDKYET_API AProjectile : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
+
 	AProjectile();
+	virtual void Tick(float DeltaTime) override;
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditAnywhere)
+	float ProjectileSpeed = 1000.f;
+
+	UPROPERTY(EditAnywhere)
+	float Damage = 1;
+
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* CollisionComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	UProjectileMovementComponent* ProjectileMovementComponent;
+private:
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 
 };

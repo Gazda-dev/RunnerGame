@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Enemies/Projectile.h"
 #include "DroneCharacter.generated.h"
 
 class UStaticMeshComponent;
@@ -29,6 +30,8 @@ protected:
 
 	void ChasingPlayer();
 
+	void ShootProjectile();
+
 private:
 
 	UPROPERTY(VisibleAnywhere)
@@ -37,6 +40,18 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent* DroneCapsule;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AProjectile> ProjectileClass;
 
+	UPROPERTY(EditAnywhere)
+	USceneComponent* ProjectileSpawnPoint;
+
+	UPROPERTY(EditAnywhere)
+	float ShootingRange = 1000.f;
+
+	UPROPERTY(EditAnywhere)
+	float TimeBetweenShots = 1.0f;
+
+	FTimerHandle ShootingTimerHandle;
 
 };
