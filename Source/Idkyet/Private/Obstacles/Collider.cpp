@@ -69,6 +69,12 @@ void ACollider::OnBoxColliderOverlap(UPrimitiveComponent* OverlappedComponent, A
 		{
 			BestCoins = CurrentCoins;
 		}
+
+		if (MainCharacter->bIsInLevel)
+		{
+			MainCharacter->SetActorLocation(MainCharacter->StartPosition);
+			return;
+		}
 	}
 	
 	USG_SaveGame* NewScoreSaveGame = Cast<USG_SaveGame>(UGameplayStatics::CreateSaveGameObject(USG_SaveGame::StaticClass()));
@@ -77,11 +83,7 @@ void ACollider::OnBoxColliderOverlap(UPrimitiveComponent* OverlappedComponent, A
 	UGameplayStatics::SaveGameToSlot(NewScoreSaveGame, TEXT("ScoreSaveGame"), 0);
 	UE_LOG(LogTemp, Warning, TEXT("Saved"));
 
-	if (ACharacter* Character = Cast<ACharacter>(OtherActor))
-	{
-		Character->Destroy();
-		UGameplayStatics::OpenLevel(GetWorld(), TEXT("Main"));
-	}
+
 }
 
 
