@@ -10,6 +10,8 @@
 /**
  * 
  */
+class UAnimMontage;
+
 UCLASS()
 class IDKYET_API AMyALSCharacter : public AALSCharacter
 {
@@ -38,6 +40,7 @@ public:
 		return TotalDistanceMoved;
 	}
 
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
 	virtual void Tick(float DeltaTime) override;
@@ -54,6 +57,11 @@ protected:
 
 	void CalculateDistance();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input #cpp")
+	class UInputAction* JumpingAction;
+
+	void Jumping();
+
 private:
 
 	float CheckpointDistance = 0.f;
@@ -62,9 +70,14 @@ private:
 	float MinCheckpointDistance = 50.f;
 
 	UPROPERTY(EditAnywhere)
-	float MaxHealth = 1.f;
+	float MaxHealth = 5.f;
 	float Health = 0.f;
 
 	UFUNCTION()
 	void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* DamageInstigator, AActor* DamageCauser);
+
+	bool bIsTouchingWall();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Montages #cpp")
+	UAnimMontage* WallRunMontage;
 };

@@ -3,6 +3,10 @@
 
 #include "Character/MyALSCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Obstacles/WallActor.h"
+#include "Animation/AnimMontage.h"
+#include "EnhancedInputSubsystems.h"
+#include "EnhancedInputComponent.h"
 
 AMyALSCharacter::AMyALSCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -12,9 +16,19 @@ AMyALSCharacter::AMyALSCharacter(const FObjectInitializer& ObjectInitializer)
 }
 
 
+
 void AMyALSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+    if (bIsTouchingWall())
+    {
+        UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+        if (AnimInstance && WallRunMontage)
+        {
+            AnimInstance->Montage_Play(WallRunMontage);
+        }
+    }
 }
 
 void AMyALSCharacter::BeginPlay()
@@ -25,6 +39,15 @@ void AMyALSCharacter::BeginPlay()
     OnTakeAnyDamage.AddDynamic(this, &AMyALSCharacter::DamageTaken);
 }
 
+void AMyALSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+    Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+    if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+    {
+        EnhancedInputComponent->BindAction(JumpingAction, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping);
+    }
+}
 void AMyALSCharacter::CalculateDistance()
 {
     Current = GetActorLocation();
@@ -75,6 +98,15 @@ void AMyALSCharacter::CalculateDistance()
     Start = Current;
 }
 
+void AMyALSCharacter::Jumping()
+{
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (AnimInstance && WallRunMontage)
+    {
+        AnimInstance->Montage_Play(WallRunMontage);
+    }
+}
+
 void AMyALSCharacter::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* DamageInstigator, AActor* DamageCauser)
 {
     if (Damage <= 0.f) return;
@@ -86,6 +118,15 @@ void AMyALSCharacter::DamageTaken(AActor* DamagedActor, float Damage, const UDam
     {
         UGameplayStatics::OpenLevel(this, FName("Main"));
     }
+}
+
+bool AMyALSCharacter::bIsTouchingWall()
+{
+    TArray<AActor*> OverlappingActors;
+    GetOverlappingActors(OverlappingActors, AWallActor::StaticClass());
+
+    //if overlapping with any wall return true
+    return OverlappingActors.Num() > 0;
 }
 
 
