@@ -23,11 +23,11 @@ void AMyALSCharacter::Tick(float DeltaTime)
 
     if (bIsTouchingWall())
     {
-        UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-        if (AnimInstance && WallRunMontage)
-        {
-            AnimInstance->Montage_Play(WallRunMontage);
-        }
+        //UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+        //if (AnimInstance && WallRunMontage)
+        //{
+        //    AnimInstance->Montage_Play(WallRunMontage);
+        //}
     }
 }
 
@@ -37,6 +37,11 @@ void AMyALSCharacter::BeginPlay()
 
     Start = GetActorLocation();
     OnTakeAnyDamage.AddDynamic(this, &AMyALSCharacter::DamageTaken);
+
+    if (DefaultCameraShakeClass)
+    {
+        GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(DefaultCameraShakeClass);
+    }
 }
 
 void AMyALSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -46,6 +51,10 @@ void AMyALSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
     if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
     {
         EnhancedInputComponent->BindAction(JumpingAction, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping);
+        EnhancedInputComponent->BindAction(JumpingAction2, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping2);
+        EnhancedInputComponent->BindAction(JumpingAction3, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping3);
+        EnhancedInputComponent->BindAction(JumpingAction4, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping4);
+        EnhancedInputComponent->BindAction(JumpingAction5, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping5);
     }
 }
 void AMyALSCharacter::CalculateDistance()
@@ -101,9 +110,65 @@ void AMyALSCharacter::CalculateDistance()
 void AMyALSCharacter::Jumping()
 {
     UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    if (AnimInstance && WallRunMontage)
+    if (AnimInstance && FancyJump1)
     {
-        AnimInstance->Montage_Play(WallRunMontage);
+        AnimInstance->Montage_Play(FancyJump1);
+        if (HitCameraShakeClass)
+        {
+            GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
+        }
+    }
+}
+
+void AMyALSCharacter::Jumping2()
+{
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (AnimInstance && FancyJump2)
+    {
+        AnimInstance->Montage_Play(FancyJump2);
+        if (HitCameraShakeClass)
+        {
+            GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
+        }
+    }
+}
+
+void AMyALSCharacter::Jumping3()
+{
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (AnimInstance && FancyJump3)
+    {
+        AnimInstance->Montage_Play(FancyJump3);
+        if (HitCameraShakeClass)
+        {
+            GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
+        }
+    }
+}
+
+void AMyALSCharacter::Jumping4()
+{
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (AnimInstance && FancyJump4)
+    {
+        AnimInstance->Montage_Play(FancyJump4);
+        if (HitCameraShakeClass)
+        {
+            GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
+        }
+    }
+}
+
+void AMyALSCharacter::Jumping5()
+{
+    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+    if (AnimInstance && FancyJump5)
+    {
+        AnimInstance->Montage_Play(FancyJump5);
+        if (HitCameraShakeClass)
+        {
+            GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
+        }
     }
 }
 
