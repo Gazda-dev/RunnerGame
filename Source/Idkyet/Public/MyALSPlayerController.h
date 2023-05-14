@@ -32,6 +32,21 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ApplySettings();
 
+	UFUNCTION(BlueprintCallable)
+		void MenuMap();
+
+	UFUNCTION(BlueprintCallable)
+		void TutorialLevel();
+
+	UFUNCTION(BlueprintCallable)
+		void Level1();
+
+	UFUNCTION(BlueprintCallable)
+		void OpenChooseLevelName();
+
+	UFUNCTION(BlueprintCallable)
+		void HideMenu();
+
 private:
 
 	UPROPERTY(EditAnywhere)
@@ -42,6 +57,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> ScoreWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> ChooseLevelClass;
 	
 	UPROPERTY()
 		UUserWidget* ScoreWidget;
@@ -51,6 +69,9 @@ private:
 
 	UPROPERTY()
 		UUserWidget* SettingsMenu;
+
+	UPROPERTY()
+		UUserWidget* ChooseLevelMenu;
 
 	void DisableAllInputs();
 	void EnableAllInputs();

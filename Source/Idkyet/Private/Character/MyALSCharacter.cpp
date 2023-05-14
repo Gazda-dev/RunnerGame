@@ -7,12 +7,14 @@
 #include "Animation/AnimMontage.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "MyALSPlayerController.h"
 
 AMyALSCharacter::AMyALSCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
     Health = MaxHealth;
+    bIsMenuVisible = false;
 }
 
 
@@ -21,14 +23,6 @@ void AMyALSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-    if (bIsTouchingWall())
-    {
-        //UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-        //if (AnimInstance && WallRunMontage)
-        //{
-        //    AnimInstance->Montage_Play(WallRunMontage);
-        //}
-    }
 }
 
 void AMyALSCharacter::BeginPlay()
@@ -38,7 +32,7 @@ void AMyALSCharacter::BeginPlay()
     Start = GetActorLocation();
     OnTakeAnyDamage.AddDynamic(this, &AMyALSCharacter::DamageTaken);
 
-    if (DefaultCameraShakeClass)
+    if (DefaultCameraShakeClass && bCameraShake)
     {
         GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(DefaultCameraShakeClass);
     }
@@ -55,6 +49,8 @@ void AMyALSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
         EnhancedInputComponent->BindAction(JumpingAction3, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping3);
         EnhancedInputComponent->BindAction(JumpingAction4, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping4);
         EnhancedInputComponent->BindAction(JumpingAction5, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping5);
+        EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Triggered, this, &AMyALSCharacter::ShowMenu);
+        /*EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::, this, &AMyALSCharacter::ShowMenu);*/
     }
 }
 void AMyALSCharacter::CalculateDistance()
@@ -170,6 +166,17 @@ void AMyALSCharacter::Jumping5()
             GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
         }
     }
+}
+
+void AMyALSCharacter::ShowMenu()
+{
+    if (AMyALSPlayerController* PlayerController = Cast<AMyALSPlayerController>(GetController()))
+    {
+
+         PlayerController->MenuMap();
+ 
+    }
+
 }
 
 void AMyALSCharacter::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* DamageInstigator, AActor* DamageCauser)

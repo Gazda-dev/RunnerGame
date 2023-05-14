@@ -42,6 +42,15 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	bool bCameraShake = false;
+	bool bIsInLevel = false;
+
+	UPROPERTY(BlueprintReadWrite)
+		FVector StartPosition;
+
+	UPROPERTY()
+		bool bIsMenuVisible = false;
+
 protected:
 	virtual void Tick(float DeltaTime) override;
 
@@ -72,11 +81,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input #cpp")
 		class UInputAction* JumpingAction5;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input #cpp")
+		class UInputAction* MenuAction;
+
 	void Jumping();
 	void Jumping2();
 	void Jumping3();
 	void Jumping4();
 	void Jumping5();
+	void ShowMenu();
 
 private:
 

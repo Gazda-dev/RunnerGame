@@ -8,10 +8,20 @@
 #include "Engine/Engine.h"
 #include "GameFramework/PlayerController.h"
 #include "Enemies/DroneCharacter.h"
+#include "Character/MyALSCharacter.h"
 
 void AMyALSPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MenuMap();
+}
+
+
+void AMyALSPlayerController::MenuMap()
+{
+	//FString LevelName = "MenuMap";
+	//UGameplayStatics::OpenLevel(this, FName(*LevelName));
 
 	if (MenuScreenClass)
 	{
@@ -23,6 +33,76 @@ void AMyALSPlayerController::BeginPlay()
 			DisableAllInputs();
 		}
 	}
+}
+
+void AMyALSPlayerController::OpenChooseLevelName()
+{
+	ChooseLevelMenu = CreateWidget<UUserWidget>(GetWorld(), ChooseLevelClass);
+
+	if (Menu && ChooseLevelMenu)
+	{
+		Menu->RemoveFromParent();
+		ChooseLevelMenu->AddToViewport();
+	}
+}
+
+void AMyALSPlayerController::HideMenu()
+{
+	if (Menu)
+	{
+		Menu->RemoveFromParent();
+	}
+}
+
+void AMyALSPlayerController::TutorialLevel()
+{
+	if (Menu && ChooseLevelMenu)
+	{
+		Menu->RemoveFromParent();
+		ChooseLevelMenu->RemoveFromParent();
+	}
+
+	FString TutorialLevel = "TutorialMap";
+	UGameplayStatics::OpenLevel(this, FName(*TutorialLevel));
+
+	EnableAllInputs();
+
+	ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
+	if (ScoreWidget)
+	{
+		ScoreWidget->AddToViewport();
+	}
+
+	if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
+	{
+		MainCharacter->bIsInLevel = true;
+		MainCharacter->bCameraShake = true;
+		MainCharacter->StartPosition = MainCharacter->GetActorLocation();
+	}
+}
+
+void AMyALSPlayerController::Level1()
+{
+	if (Menu && ChooseLevelMenu)
+	{
+		Menu->RemoveFromParent();
+		ChooseLevelMenu->RemoveFromParent();
+	}
+
+	//FString MainLevel = "Main";
+	//UGameplayStatics::OpenLevel(this, FName(*MainLevel));
+	EnableAllInputs();
+
+	if (DroneCharacter)
+	{
+		DroneCharacter->bShouldChasePlayer = true;
+	}
+
+	ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
+	if (ScoreWidget)
+	{
+		ScoreWidget->AddToViewport();
+	}
 
 	if (DroneCharacterClass)
 	{
@@ -33,7 +113,17 @@ void AMyALSPlayerController::BeginPlay()
 			DroneCharacter = Cast<ADroneCharacter>(FoundActors[0]);
 		}
 	}
+
+	if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
+	{
+		MainCharacter->bIsInLevel = true;
+		MainCharacter->bCameraShake = true;
+		MainCharacter->StartPosition = MainCharacter->GetActorLocation();
+	}
+
 }
+
+
 
 void AMyALSPlayerController::StartGame()
 {
@@ -97,6 +187,7 @@ void AMyALSPlayerController::CloseSettingsMenu()
 void AMyALSPlayerController::ApplySettings()
 {
 }
+
 
 void AMyALSPlayerController::DisableAllInputs()
 {
