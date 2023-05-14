@@ -48,6 +48,12 @@ void AMyALSPlayerController::StartGame()
 		DroneCharacter->bShouldChasePlayer = true;
 		UE_LOG(LogTemp, Warning, TEXT("shouldchaseplayer = %d"), DroneCharacter->bShouldChasePlayer ? 1 : 0);
 	}
+
+	ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
+	if (ScoreWidget)
+	{
+		ScoreWidget->AddToViewport();
+	}
 }
 
 void AMyALSPlayerController::ExitGame()

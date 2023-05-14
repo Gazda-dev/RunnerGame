@@ -77,11 +77,6 @@ void ACollider::OnBoxColliderOverlap(UPrimitiveComponent* OverlappedComponent, A
 	UGameplayStatics::SaveGameToSlot(NewScoreSaveGame, TEXT("ScoreSaveGame"), 0);
 	UE_LOG(LogTemp, Warning, TEXT("Saved"));
 
-
-	UE_LOG(LogTemp, Warning, TEXT("BestDistance %d"), BestDistance);
-	UE_LOG(LogTemp, Warning, TEXT("BestCoins %d"), BestCoins);
-
-
 	if (ACharacter* Character = Cast<ACharacter>(OtherActor))
 	{
 		Character->Destroy();

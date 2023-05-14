@@ -2,11 +2,13 @@
 
 
 #include "Character/MyALSCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 AMyALSCharacter::AMyALSCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
+    Health = MaxHealth;
 }
 
 
@@ -20,6 +22,7 @@ void AMyALSCharacter::BeginPlay()
 	Super::BeginPlay();
 
     Start = GetActorLocation();
+    OnTakeAnyDamage.AddDynamic(this, &AMyALSCharacter::DamageTaken);
 }
 
 void AMyALSCharacter::CalculateDistance()
@@ -72,6 +75,19 @@ void AMyALSCharacter::CalculateDistance()
     Start = Current;
 }
 
+void AMyALSCharacter::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* DamageInstigator, AActor* DamageCauser)
+{
+    if (Damage <= 0.f) return;
+
+    Health -= Damage;
+    UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
+
+    if (Health <= 0.f)
+    {
+        UGameplayStatics::OpenLevel(this, FName("Main"));
+    }
+}
+
 
 void AMyALSCharacter::AddCoins(int32 Value)
 {
@@ -79,7 +95,3 @@ void AMyALSCharacter::AddCoins(int32 Value)
     OnCoinsValueChanged.Broadcast(TotalValue);
 }
 
-float AMyALSCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-    return 0.0f;
-}

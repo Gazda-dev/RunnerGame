@@ -120,14 +120,23 @@ void ADroneCharacter::ShootProjectile()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-		GetWorld()->SpawnActor<AProjectile>
+		const float ProjectileSpawnOffset = 100.0f;
+		FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * ProjectileSpawnOffset);
+
+		AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>
 			(
 				ProjectileClass,
-				ProjectileSpawnPoint->GetComponentLocation(),
+				SpawnLocation,
 				GetActorRotation(),
 				SpawnParams
 			);
+
+		if (Projectile != nullptr)
+		{
+			Projectile->SetOwner(this);
+		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("ShootedProjectile"));
 }
 
 

@@ -12,26 +12,22 @@
 AProjectile::AProjectile()
 {
 
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
-	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("CollisionComponent"));
-	CollisionComponent->InitSphereRadius(5.0f);
-	CollisionComponent->BodyInstance.SetCollisionProfileName("Projectile");
-	CollisionComponent->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
-	RootComponent = CollisionComponent;
+    ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+    RootComponent = ProjectileMesh;
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-	ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-	ProjectileMovementComponent->InitialSpeed = ProjectileSpeed;
-	ProjectileMovementComponent->MaxSpeed = ProjectileSpeed;
-	ProjectileMovementComponent->bRotationFollowsVelocity = true;
-	ProjectileMovementComponent->bShouldBounce = true;
+    ProjectileMovementComponent->InitialSpeed = 1000.f;
+    ProjectileMovementComponent->MaxSpeed = 2000.f;
+
 }
 
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 	
+    ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnHit);
 }
 
 
@@ -49,23 +45,22 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 		Destroy();
 		return;
 	}
-	
-	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
+
+	auto MyOwnerInstigator = MyOwner->GetInstigatorController();
+	auto DamageTypeClass = UDamageType::StaticClass();
+
+	if (OtherActor && OtherActor != this && OtherActor != MyOwner)
 	{
-		if (AMyALSCharacter* MyALSCharacter = Cast<AMyALSCharacter>(OtherActor))
-		{
-			auto MyOwnerInstigator = MyOwner->GetInstigatorController();
-			auto DamageTypeClass = UDamageType::StaticClass();
-			
-			UGameplayStatics::ApplyDamage
-			(
-				OtherActor,
-				Damage,
-				MyOwnerInstigator,
-				this,
-				DamageTypeClass
-			);
-			Destroy();
-		}
+		UGameplayStatics::ApplyDamage
+		(
+			OtherActor,
+			Damage,
+			MyOwnerInstigator,
+			this,
+			DamageTypeClass
+		);
+
+		Destroy();
 	}
 }
+

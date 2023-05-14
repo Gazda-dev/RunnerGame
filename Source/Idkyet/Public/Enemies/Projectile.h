@@ -22,15 +22,12 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
-	
-	UPROPERTY(EditAnywhere)
-	float ProjectileSpeed = 1000.f;
 
 	UPROPERTY(EditAnywhere)
-	float Damage = 1;
+	float Damage = 1.f;
 
 	UPROPERTY(VisibleAnywhere)
-	USphereComponent* CollisionComponent;
+	UStaticMeshComponent* ProjectileMesh;
 
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* ProjectileMovementComponent;
