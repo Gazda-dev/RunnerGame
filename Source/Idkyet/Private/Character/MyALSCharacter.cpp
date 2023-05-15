@@ -8,16 +8,14 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "MyALSPlayerController.h"
+#include "Components/CapsuleComponent.h"
 
 AMyALSCharacter::AMyALSCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
     Health = MaxHealth;
-    bIsMenuVisible = false;
 }
-
-
 
 void AMyALSCharacter::Tick(float DeltaTime)
 {
@@ -44,13 +42,8 @@ void AMyALSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
     if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
     {
-        EnhancedInputComponent->BindAction(JumpingAction, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping);
-        EnhancedInputComponent->BindAction(JumpingAction2, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping2);
-        EnhancedInputComponent->BindAction(JumpingAction3, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping3);
-        EnhancedInputComponent->BindAction(JumpingAction4, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping4);
-        EnhancedInputComponent->BindAction(JumpingAction5, ETriggerEvent::Triggered, this, &AMyALSCharacter::Jumping5);
+        EnhancedInputComponent->BindAction(JumpingAction, ETriggerEvent::Triggered, this, &AMyALSCharacter::JumpingMontage);
         EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Triggered, this, &AMyALSCharacter::ShowMenu);
-        /*EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::, this, &AMyALSCharacter::ShowMenu);*/
     }
 }
 void AMyALSCharacter::CalculateDistance()
@@ -103,69 +96,49 @@ void AMyALSCharacter::CalculateDistance()
     Start = Current;
 }
 
-void AMyALSCharacter::Jumping()
+void AMyALSCharacter::JumpingMontage()
 {
     UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    if (AnimInstance && FancyJump1)
+    if (AnimInstance && JumpsMontage)
     {
-        AnimInstance->Montage_Play(FancyJump1);
+        AnimInstance->Montage_Play(JumpsMontage);
+        const int32 Selection = FMath::RandRange(0, 3);
+        FName SectionName = FName();
+        switch (Selection)
+        {
+        case 0:
+            SectionName = FName("Jump1");
+            break;
+
+        case 2:
+            SectionName = FName("Jump2");
+            break;
+
+        case 3:
+            SectionName = FName("Jump3");
+            break;
+
+        default:
+            break;
+        }
+
         if (HitCameraShakeClass)
         {
             GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
         }
+
+
     }
 }
 
-void AMyALSCharacter::Jumping2()
+void AMyALSCharacter::OnJumpMontageEnd()
 {
-    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    if (AnimInstance && FancyJump2)
-    {
-        AnimInstance->Montage_Play(FancyJump2);
-        if (HitCameraShakeClass)
-        {
-            GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
-        }
-    }
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
-void AMyALSCharacter::Jumping3()
+void AMyALSCharacter::OnJumpMontageStart()
 {
-    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    if (AnimInstance && FancyJump3)
-    {
-        AnimInstance->Montage_Play(FancyJump3);
-        if (HitCameraShakeClass)
-        {
-            GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
-        }
-    }
-}
-
-void AMyALSCharacter::Jumping4()
-{
-    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    if (AnimInstance && FancyJump4)
-    {
-        AnimInstance->Montage_Play(FancyJump4);
-        if (HitCameraShakeClass)
-        {
-            GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
-        }
-    }
-}
-
-void AMyALSCharacter::Jumping5()
-{
-    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-    if (AnimInstance && FancyJump5)
-    {
-        AnimInstance->Montage_Play(FancyJump5);
-        if (HitCameraShakeClass)
-        {
-            GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(HitCameraShakeClass);
-        }
-    }
+    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 void AMyALSCharacter::ShowMenu()
@@ -177,6 +150,16 @@ void AMyALSCharacter::ShowMenu()
  
     }
 
+}
+
+void AMyALSCharacter::HideMenu()
+{
+    if (AMyALSPlayerController* PlayerController = Cast<AMyALSPlayerController>(GetController()))
+    {
+
+        PlayerController->HideMenu();
+
+    }
 }
 
 void AMyALSCharacter::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* DamageInstigator, AActor* DamageCauser)

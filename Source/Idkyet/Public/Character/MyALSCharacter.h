@@ -48,8 +48,11 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 		FVector StartPosition;
 
-	UPROPERTY()
-		bool bIsMenuVisible = false;
+	UFUNCTION()
+		void OnJumpMontageEnd();
+
+	UFUNCTION()
+		void OnJumpMontageStart();
 
 protected:
 	virtual void Tick(float DeltaTime) override;
@@ -70,26 +73,11 @@ protected:
 	class UInputAction* JumpingAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input #cpp")
-		class UInputAction* JumpingAction2;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input #cpp")
-		class UInputAction* JumpingAction3;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input #cpp")
-		class UInputAction* JumpingAction4;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input #cpp")
-		class UInputAction* JumpingAction5;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input #cpp")
 		class UInputAction* MenuAction;
 
-	void Jumping();
-	void Jumping2();
-	void Jumping3();
-	void Jumping4();
-	void Jumping5();
+	void JumpingMontage();
 	void ShowMenu();
+	void HideMenu();
 
 private:
 
@@ -108,19 +96,7 @@ private:
 	bool bIsTouchingWall();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Montages #cpp")
-	UAnimMontage* FancyJump1;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages #cpp")
-		UAnimMontage* FancyJump2;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages #cpp")
-		UAnimMontage* FancyJump3;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages #cpp")
-		UAnimMontage* FancyJump4;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Montages #cpp")
-		UAnimMontage* FancyJump5;
+	UAnimMontage* JumpsMontage;
 
 	UPROPERTY(EditAnywhere, Category = "#cpp")
 		TSubclassOf<class UCameraShakeBase> HitCameraShakeClass;
