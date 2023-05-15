@@ -111,20 +111,16 @@ void AMyALSPlayerController::Level1()
 		ChooseLevelMenu->RemoveFromParent();
 	}
 
-	//FString MainLevel = "Main";
-	//UGameplayStatics::OpenLevel(this, FName(*MainLevel));
 	EnableAllInputs();
-
-	if (DroneCharacter)
-	{
-		DroneCharacter->bShouldChasePlayer = true;
-	}
 
 	ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
 	if (ScoreWidget)
 	{
 		ScoreWidget->AddToViewport();
 	}
+
+
+
 
 	if (DroneCharacterClass)
 	{
@@ -136,6 +132,11 @@ void AMyALSPlayerController::Level1()
 		}
 	}
 
+	if (DroneCharacter)
+	{
+		DroneCharacter->bShouldChasePlayer = true;
+		UE_LOG(LogTemp, Warning, TEXT("shouldchaseplayer = %d"), DroneCharacter->bShouldChasePlayer ? 1 : 0);
+	}
 	if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(GetPawn()))
 	{
 		MainCharacter->bIsInLevel = true;
@@ -155,26 +156,26 @@ void AMyALSPlayerController::Level1()
 
 
 
-void AMyALSPlayerController::StartGame()
-{
-	EnableAllInputs();
-	if (Menu)
-	{
-		Menu->RemoveFromParent();
-	}
-
-	if (DroneCharacter)
-	{
-		DroneCharacter->bShouldChasePlayer = true;
-		UE_LOG(LogTemp, Warning, TEXT("shouldchaseplayer = %d"), DroneCharacter->bShouldChasePlayer ? 1 : 0);
-	}
-
-	ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
-	if (ScoreWidget)
-	{
-		ScoreWidget->AddToViewport();
-	}
-}
+//void AMyALSPlayerController::StartGame()
+//{
+//	EnableAllInputs();
+//	if (Menu)
+//	{
+//		Menu->RemoveFromParent();
+//	}
+//
+//	if (DroneCharacter)
+//	{
+//		DroneCharacter->bShouldChasePlayer = true;
+//		UE_LOG(LogTemp, Warning, TEXT("shouldchaseplayer = %d"), DroneCharacter->bShouldChasePlayer ? 1 : 0);
+//	}
+//
+//	ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
+//	if (ScoreWidget)
+//	{
+//		ScoreWidget->AddToViewport();
+//	}
+//}
 
 void AMyALSPlayerController::ExitGame()
 {

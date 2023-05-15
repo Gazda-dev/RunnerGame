@@ -46,13 +46,18 @@ public:
 	bool bIsInLevel = false;
 
 	UPROPERTY(BlueprintReadWrite)
-		FVector StartPosition;
+	FVector StartPosition;
 
 	UFUNCTION()
-		void OnJumpMontageEnd();
+	void OnJumpMontageEnd();
 
 	UFUNCTION()
-		void OnJumpMontageStart();
+	void OnJumpMontageStart();
+
+	UFUNCTION(BlueprintPure)
+	float GetHealthPercent() const;
+
+	void SavingGame(bool bShouldSave);
 
 protected:
 	virtual void Tick(float DeltaTime) override;
@@ -80,6 +85,7 @@ protected:
 	void HideMenu();
 	void PauseGame();
 
+
 private:
 
 	float CheckpointDistance = 0.f;
@@ -100,8 +106,8 @@ private:
 	UAnimMontage* JumpsMontage;
 
 	UPROPERTY(EditAnywhere, Category = "#cpp")
-		TSubclassOf<class UCameraShakeBase> HitCameraShakeClass;
+	TSubclassOf<class UCameraShakeBase> HitCameraShakeClass;
 
 	UPROPERTY(EditAnywhere, Category = "#cpp")
-		TSubclassOf<class UCameraShakeBase> DefaultCameraShakeClass;
+	TSubclassOf<class UCameraShakeBase> DefaultCameraShakeClass;
 };

@@ -10,6 +10,7 @@
 #include "MyALSPlayerController.h"
 #include "Components/CapsuleComponent.h"
 #include "MyALSPlayerController.h"
+#include "Saving/SG_SaveGame.h"
 
 AMyALSCharacter::AMyALSCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -152,6 +153,11 @@ void AMyALSCharacter::OnJumpMontageStart()
 
 }
 
+float AMyALSCharacter::GetHealthPercent() const
+{
+    return Health / MaxHealth;
+}
+
 void AMyALSCharacter::ShowMenu()
 {
     if (AMyALSPlayerController* PlayerController = Cast<AMyALSPlayerController>(GetController()))
@@ -181,6 +187,36 @@ void AMyALSCharacter::PauseGame()
     
 }
 
+void AMyALSCharacter::SavingGame(bool bShouldSave)
+{
+    USG_SaveGame* SaveGame = Cast<USG_SaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("ScoreSaveGame"), 0));
+    UE_LOG(LogTemp, Warning, TEXT("Loaded Game"));
+    int32 BestDistance = 0;
+    int32 BestCoins = 0;
+    if (SaveGame)
+    {
+        BestDistance = SaveGame->BestDistance;
+        BestCoins = SaveGame->BestCoins;
+    }
+
+    int32 CurrentDistance = GetTotalDistancemoved();
+    int32 CurrentCoins = GetTotalValue();
+    if (CurrentDistance > BestDistance)
+    {
+        BestDistance = CurrentDistance;
+    }
+    if (CurrentCoins > BestCoins)
+    {
+        BestCoins = CurrentCoins;
+    }
+
+    USG_SaveGame* NewScoreSaveGame = Cast<USG_SaveGame>(UGameplayStatics::CreateSaveGameObject(USG_SaveGame::StaticClass()));
+    NewScoreSaveGame->BestDistance = BestDistance;
+    NewScoreSaveGame->BestCoins = BestCoins;
+    UGameplayStatics::SaveGameToSlot(NewScoreSaveGame, TEXT("ScoreSaveGame"), 0);
+    UE_LOG(LogTemp, Warning, TEXT("Saved Game"));
+}
+
 void AMyALSCharacter::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* DamageInstigator, AActor* DamageCauser)
 {
     if (Damage <= 0.f) return;
@@ -190,6 +226,10 @@ void AMyALSCharacter::DamageTaken(AActor* DamagedActor, float Damage, const UDam
 
     if (Health <= 0.f)
     {
+        /*
+        * Add dead widget
+        */
+
         UGameplayStatics::OpenLevel(this, FName("Main"));
     }
 }

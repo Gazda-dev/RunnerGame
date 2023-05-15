@@ -17,73 +17,73 @@ class IDKYET_API AMyALSPlayerController : public AALSPlayerController
 public:
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintCallable)
-		void StartGame();
+	//UFUNCTION(BlueprintCallable)
+	//	void StartGame();
 
 	UFUNCTION(BlueprintCallable)
-		void ExitGame();
+	void ExitGame();
 
 	UFUNCTION(BlueprintCallable)
-		void OpenSettingsMenu();
+	void OpenSettingsMenu();
 
 	UFUNCTION(BlueprintCallable)
-		void CloseSettingsMenu();
+	void CloseSettingsMenu();
 
 	UFUNCTION(BlueprintCallable)
-		void ApplySettings();
+	void ApplySettings();
 
 	UFUNCTION(BlueprintCallable)
-		void MenuMap();
+	void MenuMap();
 
 	UFUNCTION(BlueprintCallable)
-		void TutorialLevel();
+	void TutorialLevel();
 
 	UFUNCTION(BlueprintCallable)
-		void Level1();
+	void Level1();
 
 	UFUNCTION(BlueprintCallable)
-		void OpenChooseLevelName();
+	void OpenChooseLevelName();
 
 	UFUNCTION(BlueprintCallable)
-		void HideMenu();
+	void HideMenu();
 
 	UFUNCTION(BlueprintCallable)
-		void PauseGame();
+	void PauseGame();
 
 	UFUNCTION(BlueprintCallable)
-		void ResumeGameFromPause();
+	void ResumeGameFromPause();
 
 private:
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UUserWidget> MenuScreenClass;
+	TSubclassOf<class UUserWidget> MenuScreenClass;
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UUserWidget> SettingsScreenClass;
+	TSubclassOf<class UUserWidget> SettingsScreenClass;
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UUserWidget> ScoreWidgetClass;
+	TSubclassOf<class UUserWidget> ScoreWidgetClass;
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UUserWidget> ChooseLevelClass;
+	TSubclassOf<class UUserWidget> ChooseLevelClass;
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UUserWidget> PauseMenuClass;
+	TSubclassOf<class UUserWidget> PauseMenuClass;
 	
 	UPROPERTY()
-		UUserWidget* ScoreWidget;
+	UUserWidget* ScoreWidget;
 
 	UPROPERTY()
-		UUserWidget* Menu;
+	UUserWidget* Menu;
 
 	UPROPERTY()
-		UUserWidget* SettingsMenu;
+	UUserWidget* SettingsMenu;
 
 	UPROPERTY()
-		UUserWidget* ChooseLevelMenu;
+	UUserWidget* ChooseLevelMenu;
 
 	UPROPERTY()
-		UUserWidget* PauseMenu;
+	UUserWidget* PauseMenu;
 
 	void DisableAllInputs();
 	void EnableAllInputs();
@@ -91,9 +91,9 @@ private:
 	bool bIsSettingsMenuOpen = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "GameMode #cpp")
-		TSubclassOf<class ADroneCharacter> DroneCharacterClass;
+	TSubclassOf<class ADroneCharacter> DroneCharacterClass;
 
 	UPROPERTY()
-		ADroneCharacter* DroneCharacter;
+	ADroneCharacter* DroneCharacter;
 
 };
