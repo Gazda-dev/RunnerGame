@@ -78,6 +78,7 @@ protected:
 	void JumpingMontage();
 	void ShowMenu();
 	void HideMenu();
+	void PauseGame();
 
 private:
 

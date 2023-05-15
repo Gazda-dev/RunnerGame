@@ -9,6 +9,7 @@
 #include "EnhancedInputComponent.h"
 #include "MyALSPlayerController.h"
 #include "Components/CapsuleComponent.h"
+#include "MyALSPlayerController.h"
 
 AMyALSCharacter::AMyALSCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -43,7 +44,7 @@ void AMyALSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
     if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
     {
         EnhancedInputComponent->BindAction(JumpingAction, ETriggerEvent::Triggered, this, &AMyALSCharacter::JumpingMontage);
-        EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Triggered, this, &AMyALSCharacter::ShowMenu);
+        EnhancedInputComponent->BindAction(MenuAction, ETriggerEvent::Triggered, this, &AMyALSCharacter::PauseGame);
     }
 }
 void AMyALSCharacter::CalculateDistance()
@@ -102,7 +103,7 @@ void AMyALSCharacter::JumpingMontage()
     if (AnimInstance && JumpsMontage)
     {
         AnimInstance->Montage_Play(JumpsMontage);
-        const int32 Selection = FMath::RandRange(0, 3);
+        const int32 Selection = FMath::RandRange(0, 2);
         FName SectionName = FName();
         switch (Selection)
         {
@@ -110,17 +111,18 @@ void AMyALSCharacter::JumpingMontage()
             SectionName = FName("Jump1");
             break;
 
-        case 2:
+        case 1:
             SectionName = FName("Jump2");
             break;
 
-        case 3:
+        case 2:
             SectionName = FName("Jump3");
             break;
 
         default:
             break;
         }
+        AnimInstance->Montage_JumpToSection(SectionName, JumpsMontage);
 
         if (HitCameraShakeClass)
         {
@@ -133,12 +135,21 @@ void AMyALSCharacter::JumpingMontage()
 
 void AMyALSCharacter::OnJumpMontageEnd()
 {
-    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    //GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    UE_LOG(LogTemp, Display, TEXT("EndNotify - Collisions enabled"));
+    FVector DefaultLocation = GetCapsuleComponent()->GetRelativeLocation();
+    //DefaultLocation.Z -= 70.f;
+    GetCapsuleComponent()->SetRelativeLocation(DefaultLocation);
 }
 
 void AMyALSCharacter::OnJumpMontageStart()
 {
-    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    //GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    UE_LOG(LogTemp, Display, TEXT("Start notify - Collisions disabled"));
+    FVector NewLocation = GetCapsuleComponent()->GetRelativeLocation();
+    NewLocation.Z += 100.f;
+    GetCapsuleComponent()->SetRelativeLocation(NewLocation);
+
 }
 
 void AMyALSCharacter::ShowMenu()
@@ -149,7 +160,6 @@ void AMyALSCharacter::ShowMenu()
          PlayerController->MenuMap();
  
     }
-
 }
 
 void AMyALSCharacter::HideMenu()
@@ -160,6 +170,15 @@ void AMyALSCharacter::HideMenu()
         PlayerController->HideMenu();
 
     }
+}
+
+void AMyALSCharacter::PauseGame()
+{
+    if (AMyALSPlayerController* MyController = Cast<AMyALSPlayerController>(GetController()))
+    {
+        MyController->PauseGame();
+    }
+    
 }
 
 void AMyALSCharacter::DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* DamageInstigator, AActor* DamageCauser)

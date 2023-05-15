@@ -47,6 +47,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void HideMenu();
 
+	UFUNCTION(BlueprintCallable)
+		void PauseGame();
+
+	UFUNCTION(BlueprintCallable)
+		void ResumeGameFromPause();
+
 private:
 
 	UPROPERTY(EditAnywhere)
@@ -60,6 +66,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UUserWidget> ChooseLevelClass;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UUserWidget> PauseMenuClass;
 	
 	UPROPERTY()
 		UUserWidget* ScoreWidget;
@@ -72,6 +81,9 @@ private:
 
 	UPROPERTY()
 		UUserWidget* ChooseLevelMenu;
+
+	UPROPERTY()
+		UUserWidget* PauseMenu;
 
 	void DisableAllInputs();
 	void EnableAllInputs();

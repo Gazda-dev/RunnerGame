@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Enemies/DroneCharacter.h"
 #include "Character/MyALSCharacter.h"
+#include "GameFramework/PlayerStart.h"
 
 void AMyALSPlayerController::BeginPlay()
 {
@@ -54,6 +55,28 @@ void AMyALSPlayerController::HideMenu()
 	}
 }
 
+void AMyALSPlayerController::PauseGame()
+{
+	SetPause(true);
+	
+	PauseMenu = CreateWidget(this, PauseMenuClass);
+	if (PauseMenu)
+	{
+		DisableAllInputs();
+		PauseMenu->AddToViewport();
+	}
+}
+
+void AMyALSPlayerController::ResumeGameFromPause()
+{
+	SetPause(false);
+	if (PauseMenu)
+	{
+		PauseMenu->RemoveFromParent();
+		EnableAllInputs();
+	}
+}
+
 void AMyALSPlayerController::TutorialLevel()
 {
 	if (Menu && ChooseLevelMenu)
@@ -77,7 +100,6 @@ void AMyALSPlayerController::TutorialLevel()
 	{
 		MainCharacter->bIsInLevel = true;
 		MainCharacter->bCameraShake = true;
-		MainCharacter->StartPosition = MainCharacter->GetActorLocation();
 	}
 }
 
@@ -114,11 +136,19 @@ void AMyALSPlayerController::Level1()
 		}
 	}
 
-	if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
+	if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(GetPawn()))
 	{
 		MainCharacter->bIsInLevel = true;
 		MainCharacter->bCameraShake = true;
-		MainCharacter->StartPosition = MainCharacter->GetActorLocation();
+
+		TArray<AActor*> FoundActors;
+		AActor* PlayerStart = nullptr;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
+		if (FoundActors.Num() > 0)
+		{
+			PlayerStart = FoundActors[0];
+			MainCharacter->StartPosition = PlayerStart->GetActorLocation();
+		}
 	}
 
 }

@@ -73,7 +73,7 @@ void ACollider::OnBoxColliderOverlap(UPrimitiveComponent* OverlappedComponent, A
 		if (MainCharacter->bIsInLevel)
 		{
 			MainCharacter->SetActorLocation(MainCharacter->StartPosition);
-			return;
+			UE_LOG(LogTemp, Display, TEXT("bisinlevel true, teleporting..."));
 		}
 	}
 	
