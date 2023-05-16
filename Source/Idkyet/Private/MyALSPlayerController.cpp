@@ -45,6 +45,10 @@ void AMyALSPlayerController::OpenChooseLevelName()
 		Menu->RemoveFromParent();
 		ChooseLevelMenu->AddToViewport();
 	}
+	if (EndGameWidget)
+	{
+		EndGameWidget->RemoveFromParent();
+	}
 }
 
 void AMyALSPlayerController::HideMenu()
@@ -74,6 +78,15 @@ void AMyALSPlayerController::ResumeGameFromPause()
 	{
 		PauseMenu->RemoveFromParent();
 		EnableAllInputs();
+	}
+}
+
+void AMyALSPlayerController::EndGameHandle()
+{
+	EndGameWidget = CreateWidget<UUserWidget>(GetWorld(), EndGameWidgetClass);
+	if (EndGameWidget)
+	{
+		EndGameWidget->AddToViewport();
 	}
 }
 
@@ -141,6 +154,7 @@ void AMyALSPlayerController::Level1()
 	{
 		MainCharacter->bIsInLevel = true;
 		MainCharacter->bCameraShake = true;
+		MainCharacter->StartLevel();
 
 		TArray<AActor*> FoundActors;
 		AActor* PlayerStart = nullptr;

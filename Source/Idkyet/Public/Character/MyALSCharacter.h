@@ -29,15 +29,22 @@ public:
 	FOnCoinsValueChanged OnCoinsValueChanged;
 
 	UFUNCTION(BlueprintPure, Category = "Score_cpp")
-		int32 GetTotalValue() const
+	int32 GetTotalValue() const
 	{
 		return TotalValue;
 	}
 
 	UFUNCTION(BlueprintPure, Category = "Score_cpp")
-		int32 GetTotalDistancemoved() const
+	int32 GetTotalDistancemoved() const
 	{
 		return TotalDistanceMoved;
+	}
+
+
+	UFUNCTION(BlueprintPure, Category = "Score_cpp")
+	float GetLevelTime() const
+	{
+		return LevelTime;
 	}
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -58,6 +65,9 @@ public:
 	float GetHealthPercent() const;
 
 	void SavingGame(bool bShouldSave);
+
+	void StartLevel();
+	void EndLevel();
 
 protected:
 	virtual void Tick(float DeltaTime) override;
@@ -85,6 +95,32 @@ protected:
 	void HideMenu();
 	void PauseGame();
 
+
+	/*
+	* Time
+	*/
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Time #cpp")
+	float LevelStartTime = 0.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Time #cpp")
+	float LevelEndTime = 0.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Time #cpp")
+	float BestTime = 0.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Time #cpp")
+	float LevelTime = 0.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Time #cpp")
+	bool bLevelIsActive = false;
+
+	void CalculateTime();
+	void SaveBestTime();
+
+	/*
+	* Time End
+	*/
 
 private:
 

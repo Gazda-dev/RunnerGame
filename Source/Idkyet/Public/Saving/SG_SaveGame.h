@@ -22,6 +22,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Score #cpp")
 	int32 BestCoins = 0;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Score #cpp")
+	float BestTime = 0.f;
+
 	UFUNCTION(BlueprintPure, Category = "Score_cpp")
 		int32 GetBestDistance() const
 	{
@@ -33,4 +36,12 @@ public:
 	{
 		return BestCoins;
 	}
+
+
+	UFUNCTION(BlueprintPure, Category = "Score #cpp")
+		float GetBestTime() const
+	{
+		return BestTime;
+	}
+
 };

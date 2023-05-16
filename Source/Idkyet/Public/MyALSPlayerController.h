@@ -53,6 +53,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ResumeGameFromPause();
 
+	UFUNCTION(BlueprintCallable)
+	void EndGameHandle();
+
 private:
 
 	UPROPERTY(EditAnywhere)
@@ -69,6 +72,12 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> PauseMenuClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> EndGameWidgetClass;
+
+	UPROPERTY()
+	UUserWidget* EndGameWidget;
 	
 	UPROPERTY()
 	UUserWidget* ScoreWidget;
@@ -95,5 +104,6 @@ private:
 
 	UPROPERTY()
 	ADroneCharacter* DroneCharacter;
+
 
 };

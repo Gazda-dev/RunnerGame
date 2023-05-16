@@ -4,6 +4,7 @@
 #include "HUD/EndLevelTrigger.h"
 #include "Components/BoxComponent.h"
 #include "Character/MyALSCharacter.h"
+#include "MyALSPlayerController.h"
 
 AEndLevelTrigger::AEndLevelTrigger()
 {
@@ -34,7 +35,15 @@ void AEndLevelTrigger::OnBoxColliderOverlap(UPrimitiveComponent* OverlappedCompo
 	if (AMyALSCharacter* Character = Cast<AMyALSCharacter>(OtherActor))
 	{
 		Character->SavingGame(true);
+		Character->EndLevel();
+
+		if (AMyALSPlayerController* MyController = Cast<AMyALSPlayerController>(Character->GetController()))
+		{
+			MyController->EndGameHandle();
+		}
 	}
+
+
 	//widget
 }
 

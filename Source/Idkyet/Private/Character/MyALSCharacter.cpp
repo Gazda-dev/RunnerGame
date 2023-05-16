@@ -9,7 +9,6 @@
 #include "EnhancedInputComponent.h"
 #include "MyALSPlayerController.h"
 #include "Components/CapsuleComponent.h"
-#include "MyALSPlayerController.h"
 #include "Saving/SG_SaveGame.h"
 
 AMyALSCharacter::AMyALSCharacter(const FObjectInitializer& ObjectInitializer)
@@ -23,6 +22,11 @@ void AMyALSCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    if (bLevelIsActive)
+    {
+        CalculateTime();
+        CalculateDistance();
+    }
 }
 
 void AMyALSCharacter::BeginPlay()
@@ -187,6 +191,46 @@ void AMyALSCharacter::PauseGame()
     
 }
 
+void AMyALSCharacter::StartLevel()
+{
+    LevelStartTime = GetWorld()->GetTimeSeconds();
+    bLevelIsActive = true;
+    UE_LOG(LogTemp, Warning, TEXT("StartLevel called at time: %f"), LevelStartTime);
+}
+
+void AMyALSCharacter::EndLevel()
+{
+    CalculateTime();
+    SaveBestTime();
+    SavingGame(true);
+    bLevelIsActive = false;
+    UE_LOG(LogTemp, Warning, TEXT("EndLevel called at time: %f"), LevelEndTime);
+
+}
+
+void AMyALSCharacter::CalculateTime()
+{
+    LevelEndTime = GetWorld()->GetTimeSeconds();
+    LevelTime = LevelEndTime - LevelStartTime;
+    UE_LOG(LogTemp, Warning, TEXT("LevelTime: %f"), LevelTime);
+}
+
+void AMyALSCharacter::SaveBestTime()
+{
+    if (LevelTime < BestTime || BestTime == 0)
+    {
+        BestTime = LevelTime;
+        UE_LOG(LogTemp, Warning, TEXT("New BestTime: %f"), BestTime);
+        USG_SaveGame* SaveGame = Cast<USG_SaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("ScoreSaveGame"), 0));
+        if (SaveGame)
+        {
+            SaveGame->BestTime = BestTime;
+            UGameplayStatics::SaveGameToSlot(SaveGame, TEXT("ScoreSaveGame"), 0);
+            UE_LOG(LogTemp, Warning, TEXT("BestTime saved: %f"), SaveGame->BestTime);
+        }
+    }
+}
+
 void AMyALSCharacter::SavingGame(bool bShouldSave)
 {
     USG_SaveGame* SaveGame = Cast<USG_SaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("ScoreSaveGame"), 0));
@@ -197,6 +241,12 @@ void AMyALSCharacter::SavingGame(bool bShouldSave)
     {
         BestDistance = SaveGame->BestDistance;
         BestCoins = SaveGame->BestCoins;
+        //if (LevelTime < BestTime || BestTime == 0)
+        //{
+        //    BestTime = LevelTime;
+        //    SaveGame->BestTime = BestTime;
+        //}
+
     }
 
     int32 CurrentDistance = GetTotalDistancemoved();
@@ -209,6 +259,7 @@ void AMyALSCharacter::SavingGame(bool bShouldSave)
     {
         BestCoins = CurrentCoins;
     }
+
 
     USG_SaveGame* NewScoreSaveGame = Cast<USG_SaveGame>(UGameplayStatics::CreateSaveGameObject(USG_SaveGame::StaticClass()));
     NewScoreSaveGame->BestDistance = BestDistance;
