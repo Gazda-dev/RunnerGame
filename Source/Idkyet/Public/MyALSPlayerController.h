@@ -56,6 +56,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndGameHandle();
 
+	UFUNCTION(BlueprintCallable)
+	void DeadHandle();
+
+	UFUNCTION(BlueprintCallable)
+	void CreditsHandle();
+
 	UFUNCTION()
 	void OnLevel1Loaded();
 private:
@@ -76,7 +82,19 @@ private:
 	TSubclassOf<class UUserWidget> PauseMenuClass;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<class UUserWidget> EndGameWidgetClass;
+	TSubclassOf<class UUserWidget> DeadWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> EndWidgetClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UUserWidget> CreditsClass;
+
+	UPROPERTY()
+	UUserWidget* CreditsWidget;
+
+	UPROPERTY()
+	UUserWidget* DeadGameWidget;
 
 	UPROPERTY()
 	UUserWidget* EndGameWidget;

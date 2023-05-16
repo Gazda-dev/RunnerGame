@@ -34,7 +34,7 @@ void AEndLevelTrigger::OnBoxColliderOverlap(UPrimitiveComponent* OverlappedCompo
 {
 	if (AMyALSCharacter* Character = Cast<AMyALSCharacter>(OtherActor))
 	{
-		Character->SavingGame(true);
+		Character->SavingGame();
 		Character->EndLevel();
 
 		if (AMyALSPlayerController* MyController = Cast<AMyALSPlayerController>(Character->GetController()))

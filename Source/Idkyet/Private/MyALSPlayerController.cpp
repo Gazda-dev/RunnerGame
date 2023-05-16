@@ -10,6 +10,7 @@
 #include "Enemies/DroneCharacter.h"
 #include "Character/MyALSCharacter.h"
 #include "GameFramework/PlayerStart.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void AMyALSPlayerController::BeginPlay()
 {
@@ -24,15 +25,6 @@ void AMyALSPlayerController::BeginPlay()
 	{
 		OnLevel1Loaded();
 	}
-	//else if (levelName == "TutorialMap")
-	//{
-	//	TutorialLevel();
-	//}
-	//else
-	//{
-		UE_LOG(LogTemp, Warning, TEXT("heyyyyyy"));
-	//}
-
 }
 
 
@@ -53,12 +45,24 @@ void AMyALSPlayerController::MenuMap()
 	{
 		SettingsMenu->RemoveFromParent();
 	}
+	if (CreditsWidget)
+	{
+		CreditsWidget->RemoveFromParent();
+	}
+	if (EndGameWidget)
+	{
+		EndGameWidget->RemoveFromParent();
+	}
 }
 
 void AMyALSPlayerController::OpenChooseLevelName()
 {
 	ChooseLevelMenu = CreateWidget<UUserWidget>(GetWorld(), ChooseLevelClass);
 
+	if (DeadGameWidget)
+	{
+		DeadGameWidget->RemoveFromParent();
+	}
 	if (Menu)
 	{
 		Menu->RemoveFromParent();
@@ -105,12 +109,62 @@ void AMyALSPlayerController::ResumeGameFromPause()
 
 void AMyALSPlayerController::EndGameHandle()
 {
-	EndGameWidget = CreateWidget<UUserWidget>(GetWorld(), EndGameWidgetClass);
+	EndGameWidget = CreateWidget<UUserWidget>(GetWorld(), EndWidgetClass);
 	if (EndGameWidget)
 	{
 		EndGameWidget->AddToViewport();
 	}
+	if (DroneCharacter)
+	{
+		DroneCharacter->bShouldChasePlayer = false;
+		GetWorld()->GetTimerManager().ClearTimer(DroneCharacter->ShootingTimerHandle);
+	}
 	DisableAllInputs();
+	if (ACharacter* ControlledCharacter = GetCharacter())
+	{
+		if (UCharacterMovementComponent* CharacterMovement = ControlledCharacter->GetCharacterMovement())
+		{
+			CharacterMovement->SetMovementMode(MOVE_None);
+		}
+	}
+}
+
+void AMyALSPlayerController::DeadHandle()
+{
+	DeadGameWidget = CreateWidget<UUserWidget>(GetWorld(), DeadWidgetClass);
+	if (DeadGameWidget)
+	{
+		DeadGameWidget->AddToViewport();
+	}
+	if (DroneCharacter)
+	{
+		DroneCharacter->bShouldChasePlayer = false;
+		GetWorld()->GetTimerManager().ClearTimer(DroneCharacter->ShootingTimerHandle);
+	}
+	if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(GetPawn()))
+	{
+		if (MainCharacter->Health <= 0)
+		{
+			MainCharacter->Health = 5.f;
+			UE_LOG(LogTemp, Warning, TEXT("Health set to %f"), MainCharacter->Health);
+		}
+	}
+
+	DisableAllInputs();
+}
+
+void AMyALSPlayerController::CreditsHandle()
+{
+	if (Menu)
+	{
+		Menu->RemoveFromParent();
+	}
+
+	CreditsWidget = CreateWidget<UUserWidget>(GetWorld(), CreditsClass);
+	if (CreditsWidget)
+	{
+		CreditsWidget->AddToViewport();
+	}
 }
 
 void AMyALSPlayerController::TutorialLevel()
@@ -133,7 +187,7 @@ void AMyALSPlayerController::TutorialLevel()
 		ScoreWidget->AddToViewport();
 	}
 
-	if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)))
+	if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(GetPawn()))
 	{
 		MainCharacter->bIsInLevel = true;
 		MainCharacter->bCameraShake = true;
@@ -145,9 +199,6 @@ void AMyALSPlayerController::Level1()
 	UE_LOG(LogTemp, Display, TEXT("Level1 opened"));
 	FString LevelName = "Main";
 	UGameplayStatics::OpenLevel(GetWorld(), *LevelName);
-	//FTimerHandle TimerHandle;
-	//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMyALSPlayerController::OnLevel1Loaded, 1.0f, false);
-	//
 	//FLatentActionInfo LatentInfo;
 	//LatentInfo.CallbackTarget = this;
 	//LatentInfo.ExecutionFunction = FName("OnLevel1Loaded");

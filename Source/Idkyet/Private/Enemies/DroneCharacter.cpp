@@ -82,11 +82,11 @@ void ADroneCharacter::ChasingPlayer()
 					float Speed = 100.f;
 					FVector Force = DirectionToPlayer * Speed;
 
-					float TargetAltitude = 1500.f;
+					float TargetAltitude = 2500.f;
 					float AltitudeError = TargetAltitude - DroneLocation.Z;
 					float KP = 10.0f;
-					float KI = 0.0f;
-					float KD = 0.0f;
+					float KI = 0.1f;
+					float KD = 0.1f;
 					static float Integral = 0.0f;
 					static float PreviousError = 0.0f;
 					Force.Z += KP * AltitudeError + KI * Integral + KD * (AltitudeError - PreviousError);

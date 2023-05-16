@@ -64,11 +64,13 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetHealthPercent() const;
 
-	void SavingGame(bool bShouldSave);
+	void SavingGame();
 
 	void StartLevel();
 	void EndLevel();
-
+	
+	UPROPERTY(EditAnywhere, Category = "Health #cpp")
+	float Health = 2.f;
 protected:
 	virtual void Tick(float DeltaTime) override;
 
@@ -131,7 +133,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float MaxHealth = 5.f;
-	float Health = 0.f;
+
 
 	UFUNCTION()
 	void DamageTaken(AActor* DamagedActor, float Damage, const UDamageType* DamageType, class AController* DamageInstigator, AActor* DamageCauser);

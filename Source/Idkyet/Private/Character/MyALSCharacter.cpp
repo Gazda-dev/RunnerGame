@@ -202,8 +202,7 @@ void AMyALSCharacter::StartLevel()
 void AMyALSCharacter::EndLevel()
 {
     CalculateTime();
-    SaveBestTime();
-    SavingGame(true);
+    SavingGame();
     bLevelIsActive = false;
 }
 
@@ -229,40 +228,29 @@ void AMyALSCharacter::SaveBestTime()
     }
 }
 
-void AMyALSCharacter::SavingGame(bool bShouldSave)
+void AMyALSCharacter::SavingGame()
 {
     USG_SaveGame* SaveGame = Cast<USG_SaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("ScoreSaveGame"), 0));
     UE_LOG(LogTemp, Warning, TEXT("Loaded Game"));
-    int32 BestDistance = 0;
-    int32 BestCoins = 0;
-    if (SaveGame)
+    if (!SaveGame)
     {
-        BestDistance = SaveGame->BestDistance;
-        BestCoins = SaveGame->BestCoins;
-        //if (LevelTime < BestTime || BestTime == 0)
-        //{
-        //    BestTime = LevelTime;
-        //    SaveGame->BestTime = BestTime;
-        //}
-
+        SaveGame = Cast<USG_SaveGame>(UGameplayStatics::CreateSaveGameObject(USG_SaveGame::StaticClass()));
+    }
+    LevelEndTime = GetWorld()->GetTimeSeconds();
+    LevelTime = LevelEndTime - LevelStartTime;
+    if (LevelTime < SaveGame->BestTime || SaveGame->BestTime == 0)
+    {
+        SaveGame->BestTime = LevelTime;
+        UE_LOG(LogTemp, Display, TEXT("Nwe Best Time: %f"), SaveGame->BestTime);
     }
 
-    int32 CurrentDistance = GetTotalDistancemoved();
     int32 CurrentCoins = GetTotalValue();
-    if (CurrentDistance > BestDistance)
+    if (CurrentCoins > SaveGame->BestCoins)
     {
-        BestDistance = CurrentDistance;
-    }
-    if (CurrentCoins > BestCoins)
-    {
-        BestCoins = CurrentCoins;
+        SaveGame->BestCoins = CurrentCoins;
     }
 
-
-    USG_SaveGame* NewScoreSaveGame = Cast<USG_SaveGame>(UGameplayStatics::CreateSaveGameObject(USG_SaveGame::StaticClass()));
-    NewScoreSaveGame->BestDistance = BestDistance;
-    NewScoreSaveGame->BestCoins = BestCoins;
-    UGameplayStatics::SaveGameToSlot(NewScoreSaveGame, TEXT("ScoreSaveGame"), 0);
+    UGameplayStatics::SaveGameToSlot(SaveGame, TEXT("ScoreSaveGame"), 0);
     UE_LOG(LogTemp, Warning, TEXT("Saved Game"));
 }
 
@@ -275,11 +263,12 @@ void AMyALSCharacter::DamageTaken(AActor* DamagedActor, float Damage, const UDam
 
     if (Health <= 0.f)
     {
-        /*
-        * Add dead widget
-        */
-
-        UGameplayStatics::OpenLevel(this, FName("Main"));
+        if (AMyALSPlayerController* MyController = Cast<AMyALSPlayerController>(GetController()))
+        {
+            RagdollStart();
+            MyController->DeadHandle();
+        }
+       
     }
 }
 

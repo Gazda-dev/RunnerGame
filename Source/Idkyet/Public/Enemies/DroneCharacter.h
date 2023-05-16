@@ -23,6 +23,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	bool bShouldChasePlayer = false;
+	FTimerHandle ShootingTimerHandle;
 
 protected:
 
@@ -52,6 +53,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	float TimeBetweenShots = 1.0f;
 
-	FTimerHandle ShootingTimerHandle;
+
 
 };
