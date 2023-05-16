@@ -105,5 +105,7 @@ private:
 	UPROPERTY()
 	ADroneCharacter* DroneCharacter;
 
+	bool bIsGameStarted = true;
 
+	void OnLevel1Loaded();
 };

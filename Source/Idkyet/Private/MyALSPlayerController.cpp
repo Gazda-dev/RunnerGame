@@ -15,15 +15,29 @@ void AMyALSPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	MenuMap();
+	FString levelName = UGameplayStatics::GetCurrentLevelName(this);
+	if (levelName == "MainMenu")
+	{
+		MenuMap();
+	}
+	//else if (levelName == "Main")
+	//{
+	//	Level1();
+	//}
+	//else if (levelName == "TutorialMap")
+	//{
+	//	TutorialLevel();
+	//}
+	//else
+	//{
+	//	UE_LOG(LogTemp, Warning, TEXT("Level not loaded succesfully"));
+	//}
+
 }
 
 
 void AMyALSPlayerController::MenuMap()
 {
-	//FString LevelName = "MenuMap";
-	//UGameplayStatics::OpenLevel(this, FName(*LevelName));
-
 	if (MenuScreenClass)
 	{
 		Menu = CreateWidget<UUserWidget>(GetWorld(), MenuScreenClass);
@@ -34,15 +48,19 @@ void AMyALSPlayerController::MenuMap()
 			DisableAllInputs();
 		}
 	}
+	bIsGameStarted = false;
 }
 
 void AMyALSPlayerController::OpenChooseLevelName()
 {
 	ChooseLevelMenu = CreateWidget<UUserWidget>(GetWorld(), ChooseLevelClass);
 
-	if (Menu && ChooseLevelMenu)
+	if (Menu)
 	{
 		Menu->RemoveFromParent();
+	}
+	if (ChooseLevelMenu)
+	{
 		ChooseLevelMenu->AddToViewport();
 	}
 	if (EndGameWidget)
@@ -92,6 +110,7 @@ void AMyALSPlayerController::EndGameHandle()
 
 void AMyALSPlayerController::TutorialLevel()
 {
+	UE_LOG(LogTemp, Display, TEXT("Tutorial opened"));
 	if (Menu && ChooseLevelMenu)
 	{
 		Menu->RemoveFromParent();
@@ -118,9 +137,28 @@ void AMyALSPlayerController::TutorialLevel()
 
 void AMyALSPlayerController::Level1()
 {
-	if (Menu && ChooseLevelMenu)
+	UE_LOG(LogTemp, Display, TEXT("Level1 opened"));
+	FString LevelName = "Main";
+	
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	LatentInfo.ExecutionFunction = FName("OnLevel1Loaded");
+	LatentInfo.UUID = 1;
+	LatentInfo.Linkage = 0;
+
+	UGameplayStatics::LoadStreamLevel(this, FName(*LevelName), true, false, LatentInfo);
+}
+
+
+void AMyALSPlayerController::OnLevel1Loaded()
+{
+	if (Menu)
 	{
 		Menu->RemoveFromParent();
+	}
+
+	if (ChooseLevelMenu)
+	{
 		ChooseLevelMenu->RemoveFromParent();
 	}
 
@@ -129,11 +167,13 @@ void AMyALSPlayerController::Level1()
 	ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
 	if (ScoreWidget)
 	{
+		UE_LOG(LogTemp, Display, TEXT("Score added"));
 		ScoreWidget->AddToViewport();
 	}
-
-
-
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("Score not added"));
+	}
 
 	if (DroneCharacterClass)
 	{
@@ -167,29 +207,6 @@ void AMyALSPlayerController::Level1()
 	}
 
 }
-
-
-
-//void AMyALSPlayerController::StartGame()
-//{
-//	EnableAllInputs();
-//	if (Menu)
-//	{
-//		Menu->RemoveFromParent();
-//	}
-//
-//	if (DroneCharacter)
-//	{
-//		DroneCharacter->bShouldChasePlayer = true;
-//		UE_LOG(LogTemp, Warning, TEXT("shouldchaseplayer = %d"), DroneCharacter->bShouldChasePlayer ? 1 : 0);
-//	}
-//
-//	ScoreWidget = CreateWidget<UUserWidget>(GetWorld(), ScoreWidgetClass);
-//	if (ScoreWidget)
-//	{
-//		ScoreWidget->AddToViewport();
-//	}
-//}
 
 void AMyALSPlayerController::ExitGame()
 {
@@ -255,3 +272,4 @@ void AMyALSPlayerController::EnableAllInputs()
 		PlayerController->bEnableClickEvents = false;
 	}
 }
+
