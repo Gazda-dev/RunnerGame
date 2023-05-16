@@ -56,6 +56,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndGameHandle();
 
+	UFUNCTION()
+	void OnLevel1Loaded();
 private:
 
 	UPROPERTY(EditAnywhere)
@@ -107,5 +109,5 @@ private:
 
 	bool bIsGameStarted = true;
 
-	void OnLevel1Loaded();
+
 };

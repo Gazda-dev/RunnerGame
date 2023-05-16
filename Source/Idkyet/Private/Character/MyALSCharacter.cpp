@@ -40,6 +40,10 @@ void AMyALSCharacter::BeginPlay()
     {
         GetWorld()->GetFirstPlayerController()->ClientStartCameraShake(DefaultCameraShakeClass);
     }
+
+
+    FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
+    UE_LOG(LogTemp, Warning, TEXT("Current level name: %s"), *LevelName);
 }
 
 void AMyALSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -140,7 +144,6 @@ void AMyALSCharacter::JumpingMontage()
 
 void AMyALSCharacter::OnJumpMontageEnd()
 {
-    //GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     UE_LOG(LogTemp, Display, TEXT("EndNotify - Collisions enabled"));
     FVector DefaultLocation = GetCapsuleComponent()->GetRelativeLocation();
     //DefaultLocation.Z -= 70.f;
@@ -149,7 +152,6 @@ void AMyALSCharacter::OnJumpMontageEnd()
 
 void AMyALSCharacter::OnJumpMontageStart()
 {
-    //GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
     UE_LOG(LogTemp, Display, TEXT("Start notify - Collisions disabled"));
     FVector NewLocation = GetCapsuleComponent()->GetRelativeLocation();
     NewLocation.Z += 200.f;
@@ -195,7 +197,6 @@ void AMyALSCharacter::StartLevel()
 {
     LevelStartTime = GetWorld()->GetTimeSeconds();
     bLevelIsActive = true;
-    UE_LOG(LogTemp, Warning, TEXT("StartLevel called at time: %f"), LevelStartTime);
 }
 
 void AMyALSCharacter::EndLevel()
@@ -204,15 +205,12 @@ void AMyALSCharacter::EndLevel()
     SaveBestTime();
     SavingGame(true);
     bLevelIsActive = false;
-    UE_LOG(LogTemp, Warning, TEXT("EndLevel called at time: %f"), LevelEndTime);
-
 }
 
 void AMyALSCharacter::CalculateTime()
 {
     LevelEndTime = GetWorld()->GetTimeSeconds();
     LevelTime = LevelEndTime - LevelStartTime;
-    UE_LOG(LogTemp, Warning, TEXT("LevelTime: %f"), LevelTime);
 }
 
 void AMyALSCharacter::SaveBestTime()

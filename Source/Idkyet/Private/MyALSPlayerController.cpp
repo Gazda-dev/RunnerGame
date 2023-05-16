@@ -16,21 +16,21 @@ void AMyALSPlayerController::BeginPlay()
 	Super::BeginPlay();
 
 	FString levelName = UGameplayStatics::GetCurrentLevelName(this);
-	if (levelName == "MainMenu")
+	if (levelName == "Menu2")
 	{
 		MenuMap();
 	}
-	//else if (levelName == "Main")
-	//{
-	//	Level1();
-	//}
+	else if (levelName == "Main")
+	{
+		OnLevel1Loaded();
+	}
 	//else if (levelName == "TutorialMap")
 	//{
 	//	TutorialLevel();
 	//}
 	//else
 	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("Level not loaded succesfully"));
+		UE_LOG(LogTemp, Warning, TEXT("heyyyyyy"));
 	//}
 
 }
@@ -49,6 +49,10 @@ void AMyALSPlayerController::MenuMap()
 		}
 	}
 	bIsGameStarted = false;
+	if (SettingsMenu)
+	{
+		SettingsMenu->RemoveFromParent();
+	}
 }
 
 void AMyALSPlayerController::OpenChooseLevelName()
@@ -106,6 +110,7 @@ void AMyALSPlayerController::EndGameHandle()
 	{
 		EndGameWidget->AddToViewport();
 	}
+	DisableAllInputs();
 }
 
 void AMyALSPlayerController::TutorialLevel()
@@ -139,14 +144,18 @@ void AMyALSPlayerController::Level1()
 {
 	UE_LOG(LogTemp, Display, TEXT("Level1 opened"));
 	FString LevelName = "Main";
-	
-	FLatentActionInfo LatentInfo;
-	LatentInfo.CallbackTarget = this;
-	LatentInfo.ExecutionFunction = FName("OnLevel1Loaded");
-	LatentInfo.UUID = 1;
-	LatentInfo.Linkage = 0;
+	UGameplayStatics::OpenLevel(GetWorld(), *LevelName);
+	//FTimerHandle TimerHandle;
+	//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AMyALSPlayerController::OnLevel1Loaded, 1.0f, false);
+	//
+	//FLatentActionInfo LatentInfo;
+	//LatentInfo.CallbackTarget = this;
+	//LatentInfo.ExecutionFunction = FName("OnLevel1Loaded");
+	//LatentInfo.UUID = 1;
+	//LatentInfo.Linkage = 0;
 
-	UGameplayStatics::LoadStreamLevel(this, FName(*LevelName), true, false, LatentInfo);
+	//UGameplayStatics::LoadStreamLevel(this, FName(*LevelName), true, false, LatentInfo);
+	OnLevel1Loaded();
 }
 
 
