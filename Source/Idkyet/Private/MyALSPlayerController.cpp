@@ -176,7 +176,7 @@ void AMyALSPlayerController::TutorialLevel()
 		ChooseLevelMenu->RemoveFromParent();
 	}
 
-	FString TutorialLevel = "TutorialMap";
+	FString TutorialLevel = "Tutorial2";
 	UGameplayStatics::OpenLevel(this, FName(*TutorialLevel));
 
 	EnableAllInputs();

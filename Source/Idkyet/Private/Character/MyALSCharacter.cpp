@@ -154,7 +154,7 @@ void AMyALSCharacter::OnJumpMontageStart()
 {
     UE_LOG(LogTemp, Display, TEXT("Start notify - Collisions disabled"));
     FVector NewLocation = GetCapsuleComponent()->GetRelativeLocation();
-    NewLocation.Z += 200.f;
+    NewLocation.Z += 150.f;
     GetCapsuleComponent()->SetRelativeLocation(NewLocation);
 
 }

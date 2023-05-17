@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
 #include "Character/MyALSCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -40,9 +41,16 @@ void ACoin::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 {
 	if (OtherActor->IsA(AMyALSCharacter::StaticClass()))
 	{
-		AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(OtherActor);
-		MainCharacter->AddCoins(Value);
-		Destroy();
+		if (CollectSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, CollectSound, GetActorLocation());
+		}
+		
+		if (AMyALSCharacter* MainCharacter = Cast<AMyALSCharacter>(OtherActor))
+		{
+			MainCharacter->AddCoins(Value);
+			Destroy();
+		}
 	}
 }
 

@@ -9,6 +9,7 @@
 class UScoreManager;
 class USphereComponent;
 class UStaticMeshComponent;
+//class USoundBase;
 
 UCLASS()
 class IDKYET_API ACoin : public AActor
@@ -41,4 +42,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* MeshComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Coin #cpp")
+	USoundBase* CollectSound;
 };
