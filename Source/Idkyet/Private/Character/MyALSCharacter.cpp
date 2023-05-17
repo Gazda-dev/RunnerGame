@@ -10,12 +10,17 @@
 #include "MyALSPlayerController.h"
 #include "Components/CapsuleComponent.h"
 #include "Saving/SG_SaveGame.h"
+#include "Sound/SoundCue.h"
+#include "Components/AudioComponent.h"
 
 AMyALSCharacter::AMyALSCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = true;
     Health = MaxHealth;
+
+    BackgroundSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Background Sound"));
+    BackgroundSoundComponent->SetupAttachment(GetRootComponent());
 }
 
 void AMyALSCharacter::Tick(float DeltaTime)
@@ -44,6 +49,13 @@ void AMyALSCharacter::BeginPlay()
 
     FString LevelName = UGameplayStatics::GetCurrentLevelName(GetWorld());
     UE_LOG(LogTemp, Warning, TEXT("Current level name: %s"), *LevelName);
+
+    if (BackgroundSoundComponent && BackgroundSoundCue)
+    {
+        BackgroundSoundComponent->SetSound(BackgroundSoundCue);
+        BackgroundSoundComponent->Play();
+
+    }
 }
 
 void AMyALSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

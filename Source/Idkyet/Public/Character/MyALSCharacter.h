@@ -76,6 +76,12 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, Category = "Audio #cpp")
+	UAudioComponent* BackgroundSoundComponent;
+
+	UPROPERTY(EditAnywhere, Category = "Audio #cpp")
+	class USoundCue* BackgroundSoundCue;
+
 	int32 TotalDistanceMoved = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Score_cpp")
